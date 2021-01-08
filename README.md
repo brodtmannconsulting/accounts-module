@@ -9,17 +9,19 @@ This module contains User, Credential, Company, Role and Scope blocs. The Auth i
 1) Composer
 2) PHP
 3) Laravel
-4) Laravel Passport
+4) [Laravel Passport](https://laravel.com/docs/8.x/passport)
+5) [Laravel Modules](https://nwidart.com/laravel-modules/v6/introduction)
+6) [Laravel Module Installer](https://github.com/joshbrw/laravel-module-installer)
 
 ## Installation Steps :rocket:
 
+0) Before you start to you need to install all the **requirements**
+
 1) Run: `composer require maxprimak/accounts-module` in your Laravel project
-2) Then install laravel/passport if you haven't done it yet: `composer require laravel/passport`. More info about [Laravel Passport](https://laravel.com/docs/8.x/passport)
+2) Also publish Laravel Passport tables and delete them, because all the necessary tables are located in Accounts Modules
 3) Delete following table: `create_users_table` in your root project
-3) Run: `php artisan migrate`
-3) After that run: `php artisan passport:install`
-4) Run: `php artisan passport:keys` and Laravel Passport set up should be finished.
-5) Then run: `php artisan module:migrate Accounts` and `php artisan module:seed Accounts` to migrate and seed all the tables.
+4) Run: `php artisan module:migrate Accounts` and `php artisan module:seed Accounts`
+5) After that run: `php artisan passport:install` and `php artisan passport:keys` if you haven't done it yet.
 6) Also add new provider to your config/auth.php:
         
         'credentials' => [
@@ -46,5 +48,5 @@ This module contains User, Credential, Company, Role and Scope blocs. The Auth i
             </testsuite>
         </testsuites>
 
-7) And the last step is to run `php artisan test`
-8) If all the **tests have passed** the module was installed successfully! :tada:
+8) And the last step is to run `php artisan test`
+9) If all the **tests have passed** the module was installed successfully! :tada:
