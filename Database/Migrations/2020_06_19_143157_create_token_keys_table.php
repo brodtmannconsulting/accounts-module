@@ -20,6 +20,7 @@ class CreateTokenKeysTable extends Migration
             $table->dateTime('valid_from');
             $table->dateTime('valid_until');
             $table->smallInteger('revoked')->default(0);
+            $table->softDeletes();
             $table->timestamps();
         });
     }

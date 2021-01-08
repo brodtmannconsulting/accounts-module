@@ -3,6 +3,7 @@
 namespace Modules\Accounts\Console;
 
 use Illuminate\Console\Command;
+use Modules\Accounts\Entities\Auth\TokenKey;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 
