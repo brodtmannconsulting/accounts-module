@@ -2,12 +2,14 @@
     "name": "maxprimak/accounts-module",
     "description": "Accounts module with User, Credential, Company, Role and Scope structures",
     "type": "laravel-module",
+    "license": "MIT",
     "authors": [
         {
             "name": "Maxim Primak",
             "email": "maxprimak1@gmail.com"
         }
     ],
+    "minimum-stability": "dev",
     "extra": {
         "laravel": {
             "providers": [
