@@ -18,7 +18,15 @@ This module contains User, Credential, Company, Role and Scope blocs. The Auth i
 0) Before you start to you need to install all the **requirements**
 
 1) Run: `composer require maxprimak/accounts-module` in your Laravel project
-2) Also publish Laravel Passport tables and delete them, because all the necessary tables are located in Accounts Modules
+2) Also publish Laravel Passport tables: `php artisan vendor:publish --tag=passport-migrations` and *delete them*, because all the necessary tables are located in Accounts Modules:
+        
+        DELETE:
+        2016_06_01_000001_create_oauth_auth_codes_table.php
+        2016_06_01_000002_create_oauth_access_tokens_table.php
+        2016_06_01_000003_create_oauth_refresh_tokens_table.php
+        2016_06_01_000004_create_oauth_clients_table.php
+        2016_06_01_000005_create_oauth_personal_access_clients_table.php
+        
 3) Delete following table: `create_users_table` in your root project
 4) Run: `php artisan module:migrate Accounts` and `php artisan module:seed Accounts`
 5) After that run: `php artisan passport:install` and `php artisan passport:keys` if you haven't done it yet.
