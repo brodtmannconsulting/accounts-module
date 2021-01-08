@@ -38,7 +38,7 @@ class AccountsServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->register(RouteServiceProvider::class);
-
+        $this->app->register(AuthServiceProvider::class);
         $this->commands([
             \Modules\Accounts\Console\GenerateTokenKeys::class,
         ]);
