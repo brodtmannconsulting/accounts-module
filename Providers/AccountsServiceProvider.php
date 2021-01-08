@@ -2,6 +2,7 @@
 
 namespace Modules\Accounts\Providers;
 
+use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Factory;
 
@@ -20,14 +21,17 @@ class AccountsServiceProvider extends ServiceProvider
     /**
      * Boot the application events.
      *
+     * @param Router $router
      * @return void
      */
-    public function boot()
+    public function boot(Router $router)
     {
         $this->registerTranslations();
         $this->registerConfig();
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->moduleName, 'Database/Migrations'));
+        $router->aliasMiddleware ('scopes', \Laravel\Passport\Http\Middleware\CheckScopes::class);
+        $router->aliasMiddleware ('scope', \Laravel\Passport\Http\Middleware\CheckForAnyScope::class);
     }
 
     /**
