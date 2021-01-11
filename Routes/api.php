@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
-use Modules\Accounts\Http\Controllers\AuthController\AuthController;
+use Modules\Accounts\Http\Controllers\Auth\AuthController;
 
 /*
 |--------------------------------------------------------------------------
