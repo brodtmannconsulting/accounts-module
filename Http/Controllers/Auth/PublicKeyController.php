@@ -1,7 +1,6 @@
 <?php
 
-namespace Modules\Accounts\Http\Controllers\AuthController;
-
+namespace Modules\Accounts\Http\Controllers\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Modules\Accounts\Entities\Auth\TokenKey;

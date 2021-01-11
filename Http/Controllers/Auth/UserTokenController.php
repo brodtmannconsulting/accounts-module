@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Accounts\Http\Controllers\AuthController;
+namespace Modules\Accounts\Http\Controllers\Auth;
 
 use Firebase\JWT\JWT;
 use Illuminate\Http\Request;
