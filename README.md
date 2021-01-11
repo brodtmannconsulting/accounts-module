@@ -1,19 +1,19 @@
 ## Accounts module by [Brodtmann-consulting](https://brodtmann-consulting.com/)
 
-## About Accounts Module
+## About Accounts Module :information_source:
 
 This module contains User, Credential, Company, Role and Scope blocs. The Auth is made with the help of laravel/passport and also checks for Google Recaptcha. 
 
-## Requirements
+## Requirements :warning:
 
 1) Composer
 2) PHP
 3) Laravel
 4) [Laravel Passport](https://laravel.com/docs/8.x/passport)
-5) [Laravel Modules](https://nwidart.com/laravel-modules/v6/introduction)
+5) [Laravel Modules](https://nwidart.com/laravel-modules/v6/installation-and-setup)
 6) [Laravel Module Installer](https://github.com/joshbrw/laravel-module-installer)
 
-## Installation Steps :rocket:
+## Installation and Setup :rocket:
 
 0) Before you start to you need to install all the **requirements**
 
@@ -55,6 +55,14 @@ This module contains User, Credential, Company, Role and Scope blocs. The Auth i
                 <directory suffix="Test.php">./Modules/**/Tests/Unit</directory>
             </testsuite>
         </testsuites>
+8) And also uncomment these lines of code in your phpunit.xml file:
 
-8) And the last step is to run `php artisan test`
-9) If all the **tests have passed** the module was installed successfully! :tada:
+         <server name="DB_CONNECTION" value="sqlite"/>
+         <server name="DB_DATABASE" value=":memory:"/>
+                 
+9) And the last step is to run `php artisan test`
+10) If all the **tests have passed** the module was installed successfully! :tada:
+
+## Documentation :book:
+
+[API Documentation](https://documenter.getpostman.com/view/11679015/TVzRFdDY)
