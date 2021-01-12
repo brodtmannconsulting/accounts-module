@@ -33,7 +33,7 @@ class AccountsServiceProvider extends ServiceProvider
         $this->loadMigrationsFrom(module_path($this->moduleName, 'Database/Migrations'));
         $router->aliasMiddleware ('scopes', \Laravel\Passport\Http\Middleware\CheckScopes::class);
         $router->aliasMiddleware ('scope', \Laravel\Passport\Http\Middleware\CheckForAnyScope::class);
-        Schema::defaultStringLength(191);
+        // Schema::defaultStringLength(191);
     }
 
     /**
