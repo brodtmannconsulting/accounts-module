@@ -10,7 +10,7 @@ use Modules\Accounts\Entities\Role\Role;
 use Modules\Accounts\Entities\Role\RoleScope;
 use Modules\Accounts\Transformers\Role\RoleResource;
 
-class RoleScopeController extends Controller
+class RolesScopesController extends Controller
 {
     public function update($role){
         $role = Role::findOrFail($role);
