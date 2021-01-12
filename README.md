@@ -47,8 +47,13 @@ Before you start to you need to install all the **requirements**!
             'model' => \Modules\Accounts\Entities\Credential\Credential::class,
         ],
                 
-    and replace 'api' guard with the following code:
-
+    and replace 'web' and 'api' guards with the following code:
+    
+        'web' => [
+                    'driver' => 'session',
+                    'provider' => 'credentials',
+                ],
+                
         'api' => [
              'driver' => 'passport',
              'provider' => 'credentials',
@@ -72,6 +77,8 @@ Before you start to you need to install all the **requirements**!
                  
 9) And the last step is to run `php artisan test`
 10) If all the **tests have passed** the module was installed successfully! :tada:
+
+PS. Also if you face any errors with JWT try to add "lcobucci/jwt": "^3.4" to your composer.json file!
 
 ## Documentation :book:
 
