@@ -23,7 +23,7 @@ class RoleFactory extends Factory
         return [
             'id' => Str::random (32),
             'name' => $this->faker->randomElement (['admin','user','super_user']),
-            'description' => $this->faker->realText (),
+            'description' => 'description',
             'is_custom' => 0,
         ];
     }
