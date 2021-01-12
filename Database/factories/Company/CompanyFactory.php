@@ -23,7 +23,7 @@ class CompanyFactory extends Factory
         return [
             'id' => Str::random(32),
             'name' => $this->faker->company,
-            'description' => $this->faker->text,
+            'description' => 'description',
             'company_website' => $this->faker->url,
         ];
     }
