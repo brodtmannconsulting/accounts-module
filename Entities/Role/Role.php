@@ -5,6 +5,7 @@ namespace Modules\Accounts\Entities\Role;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Modules\Accounts\Entities\Auth\AccessToken;
 use Modules\Accounts\Entities\Company\Company;
 use Modules\Accounts\Entities\Scope\Scope;
 use Modules\Accounts\Entities\User\User;
@@ -67,10 +68,15 @@ class Role extends Model
 
     public function scopes(){
 
-        if(!auth()->user()){
-            $company_id = auth('api')->user()->user->company_id;
-        } else {
-            $company_id = auth()->user()->user->company_id;
+        if(!auth('api')->user() && !auth()->user()){
+            $token = AccessToken::getToken();
+            $company_id = $token->user ()->first ()->user->company_id;
+        }else{
+            if(auth('api')->user()) {
+                $company_id = auth('api')->user()->user->company_id;
+            } else {
+                if(auth()->user()) $company_id = auth()->user()->user->company_id;
+            }
         }
 
         return $this->belongsToMany(
