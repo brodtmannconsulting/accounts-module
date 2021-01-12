@@ -12,6 +12,7 @@ This module contains User, Credential, Company, Role and Scope blocs. The Auth i
 4) [Laravel Passport](https://laravel.com/docs/8.x/passport)
 5) [Laravel Modules](https://nwidart.com/laravel-modules/v6/installation-and-setup)
 6) [Laravel Module Installer](https://github.com/joshbrw/laravel-module-installer)
+7) [biscolab/laravel-recaptcha](https://github.com/biscolab/laravel-recaptcha)
 
 ## Installation and Setup :rocket:
 
