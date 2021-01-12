@@ -15,7 +15,7 @@ class ScopeResource extends JsonResource
     public function toArray($request)
     {
         return [
-                'constants_scope_id' => $this->id,
+                'scope_id' => $this->id,
                 'name' => $this->name,
                 'description' =>  $this->description,
                 'scope_created_at_for_humans' => $this->created_at->format('d-m-Y H:i'),
