@@ -61,7 +61,9 @@ class UsersRolesController extends Controller
         if(auth('api')->user()->cannot('update',[UserRole::class, $users])){
             abort(403);
         }
+        $user_ids = array();
         foreach ($users as $user){
+            array_push ($user_ids, $user['user_id']);
             UserRole::firstOrCreate(['role_id' => $role->id, 'user_id' => $user['user_id']]);
         }
 
@@ -69,7 +71,7 @@ class UsersRolesController extends Controller
         Log::notice('Successfully updated users roles', ['user_id' => auth('api')->user ()->user->id,
             'username' => auth('api')->user ()->getHashedUsername(auth('api')->user ()->username),
             'ip' => request ()->ip (),
-            'target_user_id' => $user->id,
+            'target_user_ids' => $user_ids,
             'role_id' => $role->id,
         ]);
         return UserResource::collection ($role->users);
