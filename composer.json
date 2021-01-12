@@ -9,9 +9,6 @@
             "email": "info@brodtmann-consulting.com"
         }
     ],
-    "require": {
-        "biscolab/laravel-recaptcha": "^4.1"
-    },
     "minimum-stability": "dev",
     "extra": {
         "laravel": {
