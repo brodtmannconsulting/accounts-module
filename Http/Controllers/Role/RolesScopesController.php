@@ -20,8 +20,8 @@ class RolesScopesController extends Controller
         }
         foreach ($scopesData as $scope){
             RoleScope::firstOrCreate([
-                'constants_scope_id' => $scope['constants_scope_id'],
-                'constants_user_role_id' => $role->id,
+                'scope_id' => $scope['scope_id'],
+                'role_id' => $role->id,
                 'company_id' => auth ()->user ()->user->company_id
             ]);
         }
@@ -44,8 +44,8 @@ class RolesScopesController extends Controller
             abort(403);
         }
         foreach ($scopesData as $scope){
-            $role_scope = RoleScope::where('constants_scope_id', $scope['constants_scope_id'])
-                ->where('constants_user_role_id', $role->id)
+            $role_scope = RoleScope::where('scope_id', $scope['scope_id'])
+                ->where('role_id', $role->id)
                 ->where('company_id', auth ()->user ()->user->company_id)
                 ->firstOrFail();
             $role_scope->delete();
@@ -66,7 +66,7 @@ class RolesScopesController extends Controller
     {
         $scopesData = $request->validate ([
             "scopes" => "required|array|min:1",
-            'scopes.*.constants_scope_id' => 'required|exists:constants_scopes,id',
+            'scopes.*.scope_id' => 'required|exists:scopes,id',
         ]);
         //remove duplicate values from array
         $scopesData = array_map("unserialize", array_unique(array_map("serialize", $scopesData['scopes'])));

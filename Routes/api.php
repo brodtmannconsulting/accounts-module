@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Modules\Accounts\Http\Controllers\Auth\AuthController;
+use Modules\Accounts\Http\Controllers\Role\RolesScopesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -78,8 +79,8 @@ Route::middleware(['auth:api'])->group(function () {
 
 //RolesScopes
 Route::middleware(['auth:api'])->group(function () {
-    Route::patch ('/role_scopes/{role}','Role\RolesScopesController@update')->middleware (['scope:user_account_roles_update_company,user_account_roles_update_all']);
-    Route::post ('/role_scopes/delete/{role}','Role\RolesScopesController@destroy')->middleware (['scope:user_account_roles_update_company,user_account_roles_update_all']);
+    Route::patch ('/role_scopes/{role}',[RolesScopesController::class, 'update'])->middleware (['scope:user_account_roles_update_company,user_account_roles_update_all']);
+    Route::post ('/role_scopes/delete/{role}',[RolesScopesController::class, 'destroy'])->middleware (['scope:user_account_roles_update_company,user_account_roles_update_all']);
 });
 
 //UserTokenController
