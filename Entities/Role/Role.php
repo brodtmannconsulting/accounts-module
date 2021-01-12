@@ -67,7 +67,11 @@ class Role extends Model
 
     public function scopes(){
 
-        $company_id = auth()->user()->user->company_id;
+        if(!auth()->user()){
+            $company_id = auth('api')->user()->user->company_id;
+        } else {
+            $company_id = auth()->user()->user->company_id;
+        }
 
         return $this->belongsToMany(
             Scope::class,
