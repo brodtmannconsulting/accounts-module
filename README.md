@@ -15,10 +15,19 @@ This module contains User, Credential, Company, Role and Scope blocs. The Auth i
 
 ## Installation and Setup :rocket:
 
-0) Before you start to you need to install all the **requirements**
+Before you start to you need to install all the **requirements**!
 
-1) Run: `composer require maxprimak/accounts-module` in your Laravel project
-2) Also publish Laravel Passport tables: `php artisan vendor:publish --tag=passport-migrations` and *delete them*, because all the necessary tables are located in Accounts Modules:
+0) First, add these lines of code to your composer.json:
+
+        "repositories": [
+                {
+                    "type": "vcs",
+                    "url": "git@github.com:brodtmannconsulting/accounts-module"
+                }
+            ],
+            
+1) Run: `composer require brodtmannconsulting/accounts-module` in your Laravel project. To install this package you need to be a **collaborator** of this repo and also have an [access token](https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/creating-a-personal-access-token).
+2) Also publish Laravel Passport tables: `php artisan vendor:publish --tag=passport-migrations` and **delete them**, because all the necessary tables are located in Accounts Modules:
         
         DELETE:
         2016_06_01_000001_create_oauth_auth_codes_table.php
