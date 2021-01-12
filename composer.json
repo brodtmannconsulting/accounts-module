@@ -1,12 +1,12 @@
 {
-    "name": "maxprimak/accounts-module",
+    "name": "brodtmannconsulting/accounts-module",
     "description": "Accounts module with User, Credential, Company, Role and Scope structures",
     "type": "laravel-module",
     "license": "MIT",
     "authors": [
         {
-            "name": "Maxim Primak",
-            "email": "maxprimak1@gmail.com"
+            "name": "Brodtmann-consulting.com",
+            "email": "info@brodtmann-consulting.com"
         }
     ],
     "minimum-stability": "dev",
