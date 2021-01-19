@@ -40,7 +40,7 @@ class UserRolePolicy
         }
         if (auth('api')->user()->tokenCan('role_user_accounts_list_company')){
              if( auth('api')->user()->user->company_id == $company->id ){
-                 return CompanyRole::where('company_id',$company->id)->where('constant_user_role_id',$role->id)->exists();
+                 return CompanyRole::where('company_id',$company->id)->where('role_id',$role->id)->exists();
              }
         }
         return false;

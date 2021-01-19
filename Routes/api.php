@@ -70,7 +70,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post ('/company_roles/delete/{company}','Company\CompaniesRolesController@destroy')->middleware (['scope:system_company_update_all']);
 });
 
-//UsersRoles
+//UsersRolesUsersRolesController
 Route::middleware(['auth:api'])->group(function () {
     Route::post ('/users_roles','User\UsersRolesController@store')->middleware (['scope:user_account_roles_update_company,user_account_roles_update_all']);
     Route::post ('/users_roles/delete','User\UsersRolesController@destroy')->middleware (['scope:user_account_roles_update_company,user_account_roles_update_all']);
