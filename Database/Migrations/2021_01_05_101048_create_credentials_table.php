@@ -16,7 +16,7 @@ class CreateCredentialsTable extends Migration
         Schema::create('credentials', function (Blueprint $table) {
             $table->string('id',128)->unique ();
             $table->string('user_id')->index();
-            $table->string('username',128)->unique ();
+            $table->string('username',300)->unique ();
             $table->string('AES_256_username',700);
             $table->string('password');
             $table->string('valid_from');

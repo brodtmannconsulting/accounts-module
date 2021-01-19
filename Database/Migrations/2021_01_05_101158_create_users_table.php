@@ -15,9 +15,9 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->string('id',128)->unique ();
-            $table->string('first_name');
-            $table->string('last_name');
-            $table->string('company_id');
+            $table->string('first_name', 300);
+            $table->string('last_name',  300);
+            $table->string('company_id',  300);
             $table->integer('allow_log_in');
             $table->string('language')->default('de');
             $table->softDeletes();
