@@ -19,10 +19,10 @@ class RolesScopesController extends Controller
             abort(403);
         }
         foreach ($scopesData as $scope){
-            RoleScope::firstOrCreate([
+            $roleScope = RoleScope::firstOrCreate([
                 'scope_id' => $scope['scope_id'],
                 'role_id' => $role->id,
-                'company_id' => auth ()->user ()->user->company_id
+                'company_id' => request()->company_id
             ]);
         }
 
@@ -46,7 +46,7 @@ class RolesScopesController extends Controller
         foreach ($scopesData as $scope){
             $role_scope = RoleScope::where('scope_id', $scope['scope_id'])
                 ->where('role_id', $role->id)
-                ->where('company_id', auth ()->user ()->user->company_id)
+                ->where('company_id', request()->company_id)
                 ->firstOrFail();
             $role_scope->delete();
         }
@@ -65,6 +65,7 @@ class RolesScopesController extends Controller
     private function validateScopesData(Request $request)
     {
         $scopesData = $request->validate ([
+            'company_id' => 'required|exists:companies,id',
             "scopes" => "required|array|min:1",
             'scopes.*.scope_id' => 'required|exists:scopes,id',
         ]);
