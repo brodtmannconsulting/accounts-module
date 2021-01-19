@@ -68,7 +68,10 @@ class Role extends Model
 
     public function scopes(){
 
-        if(!auth('api')->user() && !auth()->user()){
+        if(request ()->company_id){
+            $company_id = request ()->company_id;
+        }
+        else if (!auth('api')->user() && !auth()->user()){
             $token = AccessToken::getToken();
             $company_id = $token->user ()->first ()->user->company_id;
         }else{

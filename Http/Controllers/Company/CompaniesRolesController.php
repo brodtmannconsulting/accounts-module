@@ -41,6 +41,8 @@ class CompaniesRolesController extends Controller
     public function show($company){
         $company = Company::findOrFail($company);
         $rolesData = $this->validateRequest(request ());
+        request()->request->add(['company_id' => $company->id]);
+
         if(auth('api')->user()->cannot('viewAny', [CompanyRole::class, $company])){
             abort(403);
         }

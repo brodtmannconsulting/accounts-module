@@ -65,7 +65,7 @@ Route::middleware(['auth:api'])->group(function () {
 
 Route::middleware(['auth:api'])->group(function () {
     Route::get ('/company_roles/{company_id}','Company\CompaniesRolesController@index')->middleware (['scope:system_roles_list_company,system_roles_list_all']);
-    Route::post ('/company_roles/role/{role_id}','Company\CompaniesRolesController@show')->middleware (['scope:system_roles_list_company,system_roles_list_all']);
+    Route::post ('/company_roles/role/{company_id}','Company\CompaniesRolesController@show')->middleware (['scope:system_roles_list_company,system_roles_list_all']);
     Route::patch ('/company_roles/{company}','Company\CompaniesRolesController@update')->middleware (['scope:system_company_update_all']);
     Route::post ('/company_roles/delete/{company}','Company\CompaniesRolesController@destroy')->middleware (['scope:system_company_update_all']);
 });

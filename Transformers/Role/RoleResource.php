@@ -10,7 +10,8 @@ class RoleResource extends JsonResource
     /**
      * Transform the resource into an array.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
+     * @param $company
      * @return array
      */
     public function toArray($request)
