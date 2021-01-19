@@ -3,6 +3,7 @@
 namespace Modules\Accounts\Http\Controllers\Company;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Routing\Controller;
 use Modules\Accounts\Entities\Company\Company;
@@ -35,6 +36,18 @@ class CompaniesRolesController extends Controller
             'roles' => $rolesData,
         ]);
         return RoleResource::collection($company->roles);
+    }
+
+    public function show($company){
+        $company = Company::findOrFail($company);
+        $rolesData = $this->validateRequest(request ());
+        if(auth('api')->user()->cannot('viewAny', [CompanyRole::class, $company])){
+            abort(403);
+        }
+        $role = $company->roles()->where('role_id', $rolesData[0]['role_id'])->first();
+        return (new RoleResource($role))
+            ->response ()
+            ->setStatusCode (Response::HTTP_OK);
     }
 
     public function destroy($company){
