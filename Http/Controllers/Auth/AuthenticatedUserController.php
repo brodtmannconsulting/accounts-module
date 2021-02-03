@@ -11,9 +11,10 @@ use Modules\Accounts\Transformers\User\UserResource;
 class AuthenticatedUserController extends Controller
 {
     public function index(){
-        $token = AccessToken::getToken();
-        return (new UserResource($token->user ()->first ()->user))
-            ->response ()
-            ->setStatusCode (Response::HTTP_OK);
+        return (new UserResource(auth('api')->user()->user));
+//        $token = AccessToken::getToken();
+//        return (new UserResource($token->user ()->first ()->user))
+//            ->response ()
+//            ->setStatusCode (Response::HTTP_OK);
     }
 }
