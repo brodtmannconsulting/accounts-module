@@ -67,7 +67,7 @@ class RolesController extends Controller
     }
 
     public function update($role){
-        $roleData = $this->validateRoleDataForUpdate();
+        $roleData = $this->validateRoleDataForUpdate($role);
         $role = Role::findOrFail($role);
         if(auth('api')->user()->cannot('update', $role)){
             abort(403);
@@ -121,18 +121,18 @@ class RolesController extends Controller
         ]);
     }
 
-    private function validateRoleDataForUpdate()
+    private function validateRoleDataForUpdate($role)
     {
         if(auth('api')->user ()->tokenCan('system_roles_add_all')){
             return request ()->validate ([
-                'name' => 'max:255|unique:roles,name',
+                'name' => 'max:255|unique:roles,name,'. $role,
                 'description' => 'max:255',
                 'is_custom' => 'boolean'
             ]);
         }
 
         return request ()->validate ([
-            'name' => 'max:255|unique:roles,name',
+            'name' => 'max:255|unique:roles,name' . $role,
             'description' => 'max:255',
             'is_custom' => 'boolean|notIn:0'
         ]);
