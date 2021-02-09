@@ -74,7 +74,10 @@ class UsersRolesController extends Controller
             'target_user_ids' => $user_ids,
             'role_id' => $role->id,
         ]);
-        return UserResource::collection ($role->users);
+        $users = $role->users;
+        $user = User::findOrFail($users[0]['user_id']);
+        $users = $users->where('company_id', $user->company_id)->get();
+        return UserResource::collection ($users);
     }
 
     public function show($role){
