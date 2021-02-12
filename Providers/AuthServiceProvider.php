@@ -118,9 +118,12 @@ class AuthServiceProvider extends ServiceProvider
             'green_pioneers_status' => 'can access green_pioneers_status', // ???
             'new_initiatives' => 'can access new_initiatives',
             'submit_questions' => 'can access submit_questions',
-            'notifications' => 'can access submit_questions',
+            'notifications' => 'can access notifications',
             'resiliency' => 'can access resiliency',
-
+            'question_types' => 'can list, store and update question_types',
+            'question_options' => 'can list, store and update question_options',
+            'question_answers' => 'can show question answer',
+            'answers' => 'can list, store and update all answers',
         ]);
 
 
