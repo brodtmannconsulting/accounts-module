@@ -101,7 +101,26 @@ class AuthServiceProvider extends ServiceProvider
             'user_account_roles_update_all'=> 'Can access update, destroy and store in UserRolesController and add and remove all roles to all users',
 
             'role_user_accounts_list_all'=> 'Can access index, show in UserRolesController and get all users of role',
-            'role_user_accounts_list_company'=> 'Can access index, show in UserRolesController and get all company users of role'
+            'role_user_accounts_list_company'=> 'Can access index, show in UserRolesController and get all company users of role',
+
+            // VIVIDLEAF
+            'achievements' => 'can access achievements',
+            'client_data_analysis' => 'can access client_data_analysis',
+            'signUp_questionnaire' => 'can access client_signUp_questionnaire',
+            'resiliency_questionnaire' => 'can access resiliency_questionnaire',
+            'questionnaire_analytics' => 'can access questionnaire_analytics',
+            'community_news' => 'can access community_news',
+            'data_monitoring' => 'can access data_monitoring',
+            'data_submission' => 'can access data_submission',
+            'deep_dive' => 'can access deep_dive',
+            'green_pioneers' => 'can access green_pioneers', //??
+            'green_pioneers_communication' => 'can access green_pioneers_communication', // ???
+            'green_pioneers_status' => 'can access green_pioneers_status', // ???
+            'new_initiatives' => 'can access new_initiatives',
+            'submit_questions' => 'can access submit_questions',
+            'notifications' => 'can access submit_questions',
+            'resiliency' => 'can access resiliency',
+
         ]);
 
 
