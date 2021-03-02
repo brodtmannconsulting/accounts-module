@@ -102,7 +102,7 @@ class Credential extends Authenticatable
     }
 
     public function setValidUntilAttributeIfNull(){
-        $this->attributes['valid_until'] = now()->addDay (20);
+        $this->attributes['valid_until'] = now()->addYear ();
     }
 
     public function setValidUntilAttribute($valid_until){

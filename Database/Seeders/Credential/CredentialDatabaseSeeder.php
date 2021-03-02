@@ -27,7 +27,10 @@ class CredentialDatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $user_id = User::factory()->create ()->id;
+        $user_id = User::factory()->create ([
+            'first_name' => 'Maxim',
+            'last_name' => 'Primak'
+        ])->id;
         Credential::factory ()->create([
             'user_id' => $user_id,
             'username' => 'maxprimak',
@@ -41,7 +44,10 @@ class CredentialDatabaseSeeder extends Seeder
             'password' => '123456789',
         ]);
 
-        $user_id = User::factory()->create ()->id;
+        $user_id = User::factory()->create ([
+            'first_name' => 'Marc',
+            'last_name' => 'Lammerding'
+        ])->id;
         Credential::factory ()->create([
             'user_id' => $user_id,
             'username' => 'marc',
