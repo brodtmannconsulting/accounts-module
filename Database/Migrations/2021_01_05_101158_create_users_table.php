@@ -19,7 +19,7 @@ class CreateUsersTable extends Migration
             $table->string('last_name',  300);
             $table->string('company_id',  300);
             $table->integer('allow_log_in');
-            $table->string('language')->default('de');
+            $table->string('language')->default('en');
             $table->softDeletes();
             $table->timestamps();
         });
