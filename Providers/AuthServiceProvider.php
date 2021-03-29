@@ -104,26 +104,21 @@ class AuthServiceProvider extends ServiceProvider
             'role_user_accounts_list_company'=> 'Can access index, show in UserRolesController and get all company users of role',
 
             // VIVIDLEAF
-            'achievements' => 'can access achievements',
-            'client_data_analysis' => 'can access client_data_analysis',
-            'signUp_questionnaire' => 'can access client_signUp_questionnaire',
-            'resiliency_questionnaire' => 'can access resiliency_questionnaire',
-            'questionnaire_analytics' => 'can access questionnaire_analytics',
-            'community_news' => 'can access community_news',
-            'data_monitoring' => 'can access data_monitoring',
-            'data_submission' => 'can access data_submission',
-            'deep_dive' => 'can access deep_dive',
-            'green_pioneers' => 'can access green_pioneers', //??
-            'green_pioneers_communication' => 'can access green_pioneers_communication', // ???
-            'green_pioneers_status' => 'can access green_pioneers_status', // ???
-            'new_initiatives' => 'can access new_initiatives',
-            'submit_questions' => 'can access submit_questions',
-            'notifications' => 'can access notifications',
-            'resiliency' => 'can access resiliency',
-            'question_types' => 'can list, store and update question_types',
-            'question_options' => 'can list, store and update question_options',
-            'question_answers' => 'can show question answer',
-            'answers' => 'can list, store and update all answers',
+            'suggestions_list_all' => 'Can Access Suggestions, and see all suggestions of ALL companies',
+            'suggestions_list_company' => 'Can Access Suggestions, and see suggestions ONLY of own company',
+            'suggestions_create' => 'Can create suggestions',
+            'suggestions_update' => 'Can update suggestions',
+            'suggestions_delete' => 'Can delete suggestions',
+            'questionnaire_list' => 'Can Access Questionnaire, and see ALL saved questions in System',
+            'questionnaire_company' => 'Can Access Questionnaire, and see ONLY questions saved by users of own company',
+            'answers_create' => 'Can answer questions',
+            'answers_update' => 'Can update and delete answers of questions',
+            'manage_questions' => 'Can Access Manage Questions Page',
+            'manage_questions_create' => 'Can create new Questions of all types',
+            'manage_questions_update' => 'Can update questions of all types',
+            'manage_questions_delete' => 'Can delete questions of all types',
+            'certificates_list' => 'Can Access Certificates Page, and see all Certificates of ALL Companies',
+            'certificates_company' => 'Can Access Certificates Page, and see Certificates ONLY of own Company',
         ]);
 
 
