@@ -119,6 +119,7 @@ class AuthServiceProvider extends ServiceProvider
             'manage_questions_delete' => 'Can delete questions of all types',
             'certificates_list' => 'Can Access Certificates Page, and see all Certificates of ALL Companies',
             'certificates_company' => 'Can Access Certificates Page, and see Certificates ONLY of own Company',
+
         ]);
 
 
