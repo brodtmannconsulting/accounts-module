@@ -9,7 +9,11 @@ use Illuminate\Support\Str;
 use Modules\Accounts\Database\factories\Company\CompanyFactory;
 use Modules\Accounts\Entities\Role\Role;
 use Modules\Accounts\Entities\Role\RoleScope;
-use Modules\Accounts\Entities\User\User;;
+use Modules\Accounts\Entities\User\User;
+use Modules\Question\Entities\Question;
+use Modules\Question\Entities\QuestionAnswer;
+
+;
 
 class Company extends Model
 {
@@ -110,5 +114,30 @@ class Company extends Model
         return '/companies/'. $this->id;
     }
 
+    public function calculateQuestionnaireScore ($question_type_id, $category_id = null) {
+        $question_ids = Question::where('question_type_id', $question_type_id);
+        if ($category_id) $question_ids->where('category_id', $category_id);
+        $question_ids = $question_ids->pluck ('id');
+
+        $answers = QuestionAnswer::where('related_to', $this->id)->whereIn('question_id', $question_ids)->with('question')->get();
+
+        $not_skipped_answers = $answers->filter(function ($answer) {
+            return $answer->skipped == 0;
+        });
+
+        $skipped_answers = $answers->filter(function ($answer) {
+            return $answer->skipped == 1;
+        });
+
+
+        $total_sum_question_weights = Question::where('question_type_id', $question_type_id)
+            ->whereNotIn('id', $skipped_answers->pluck('question_id'));
+
+        if ($category_id) $total_sum_question_weights->where('category_id', $category_id);
+        $total_sum_question_weights = $total_sum_question_weights->sum('question_weight');
+
+        $achieved_sum__weights = $not_skipped_answers->sum('achieved_weight');
+        return round($achieved_sum__weights / $total_sum_question_weights,3);
+    }
 
 }
