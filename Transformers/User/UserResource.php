@@ -30,6 +30,7 @@ class UserResource extends JsonResource
                 'company_id' => $this->company_id,
                 'first_name' => decrypt ($this->first_name),
                 'last_name' => decrypt ($this->last_name),
+                'email' => $this->email,
                 'language' => $this->language,
                 'allow_log_in' => $this->allow_log_in,
                 'allow_log_in_for_humans' => $allow_log_in_for_humans,
