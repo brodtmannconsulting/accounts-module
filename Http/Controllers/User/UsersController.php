@@ -186,6 +186,7 @@ class UsersController extends Controller
         return $request->validate ([
             'first_name' => 'required|max:255',
             'last_name' => 'required|max:255',
+            'email' => 'nullable|max:255|email',
             'language' => 'max:255|in:de,en',
             'company_id' => 'required|exists:companies,id',
             'allow_log_in' => 'boolean',
@@ -197,6 +198,7 @@ class UsersController extends Controller
         return $request->validate ([
             'first_name' => 'max:255',
             'last_name' => 'max:255',
+            'email' => 'max:255|email',
             'language' => 'max:255|in:de,en',
         ]);
     }
