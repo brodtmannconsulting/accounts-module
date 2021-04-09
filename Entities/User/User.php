@@ -70,7 +70,7 @@ class User extends Model
         static::creating(function ($model)
         {
             $model->setIdAttribute();
-            // $model->setRsaKey();
+            $model->setNotificationChannels();
         });
 
         static::deleting(function ($model)
@@ -91,6 +91,10 @@ class User extends Model
 
     public function setFirstNameAttribute($first_name){
         $this->attributes['first_name'] = encrypt ($first_name);
+    }
+
+    public function setNotificationChannels () {
+        $this->attributes['notification_channels'] = array('mail' => true, 'database' => true);
     }
 
     public function deleteUsersRoles() {
