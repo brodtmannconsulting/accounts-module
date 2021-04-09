@@ -94,7 +94,7 @@ class User extends Model
     }
 
     public function setNotificationChannels () {
-        $this->attributes['notification_channels'] = array('mail' => true, 'database' => true);
+        $this->attributes['notification_channels'] = json_encode(array('mail' => true, 'database' => true));
     }
 
     public function deleteUsersRoles() {
