@@ -36,6 +36,7 @@ class UserResource extends JsonResource
                 'allow_log_in_for_humans' => $allow_log_in_for_humans,
                 'user_created_at_for_humans' => $this->created_at->format('d-m-Y H:i'),
                 'user_created_at' => $this->created_at,
+                'notification_channels' => $this->notification_channels,
                 'credentials' => CredentialResource::collection ($this->credentials),
                 'company' => new CompanyResource($this->company),
                 'roles' =>  RoleResource::collection($this->roles),

@@ -54,6 +54,10 @@ class User extends Model
         'allow_log_in' => self::yes,
     ];
 
+    protected $casts = [
+        'notification_channels' => 'array'
+    ];
+
     /**
      * Boot function for using with User Events
      *
