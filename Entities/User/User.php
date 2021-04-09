@@ -103,6 +103,10 @@ class User extends Model
         $this->rsa_keys()->delete();
     }
 
+    public function getFullNameAttribute() {
+        return ucfirst(decrypt($this->first_name)) . ' ' . ucfirst(decrypt($this->last_name));
+    }
+
     /**
      * @param array $scopes
      * @return bool
