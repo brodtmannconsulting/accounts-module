@@ -69,7 +69,7 @@ class AuthController extends Controller
             return response()->json(['status' => 'logged_out'], 200);
         }
         else{
-            return response()->json(['status' => 'not_logged_in'], 401);
+            return response()->json(['status' => 'not_logged_in'], 200);
         }
     }
 }
