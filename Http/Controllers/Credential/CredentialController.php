@@ -105,7 +105,7 @@ class CredentialController extends Controller
         if(auth('api')->user()->cannot('update', [Credential::class, $credential])){
             abort(403);
         }
-        $credential->update($this->validateUpdateData ());
+        $credential->update($this->validateUpdateData ($credential->id));
         $credential->fresh();
 
         Log::notice('Successfully updated a credential of a user', ['user_id' => auth ()->user ()->user->id,
@@ -146,38 +146,59 @@ class CredentialController extends Controller
 
     private function validateData()
     {
+        if (request()->input('username')) {
+            request()->merge([
+                'hashed_username' => Credential::getHashedUsername(request()->input('username')),
+            ]);
+        }
+
         $customMessages = [
             'password.regex'   => 'The :attribute is invalid, password must contain at least one lowercase letter, one uppercase letter and one number',
+            'hashed_username.unique'   => 'This username has already been taken',
         ];
-        return request ()->validate ([
+        $data = request ()->validate ([
             'user_id' => 'required|exists:users,id',
-            'username' => 'required|max:255',
+            'username' => 'required|max:255|unique:credentials,username',
+            'hashed_username' => 'unique:credentials,username',
             'password' => ['required',
-                            'min:8',
-                            'confirmed',
-                            'regex:/[a-z]/',      // must contain at least one lowercase letter
-                            'regex:/[A-Z]/',      // must contain at least one uppercase letter
-                            'regex:/[0-9]/',
-                            'max:255'],
+                'min:8',
+                'confirmed',
+                'regex:/[a-z]/',      // must contain at least one lowercase letter
+                'regex:/[A-Z]/',      // must contain at least one uppercase letter
+                'regex:/[0-9]/',
+                'max:255'],
             'valid_until' => 'date',
         ], $customMessages);
+        unset($data["hashed_username"]);
+        return $data;
     }
 
-    private function validateUpdateData()
+    private function validateUpdateData($credential_id)
     {
         $customMessages = [
             'password.regex'   => 'The :attribute is invalid, password must contain at least one lowercase letter, one uppercase letter and one number',
+            'hashed_username.unique'   => 'This username has already been taken',
         ];
-        return request ()->validate ([
+
+        if (request()->input('username')) {
+            request()->merge([
+                'hashed_username' => Credential::getHashedUsername(request()->input('username')),
+            ]);
+        }
+
+        $data = request ()->validate ([
             'user_id' => 'exists:users,id',
             'username' => 'max:255',
+            'hashed_username' => 'unique:credentials,username,'. $credential_id,
             'password' => ['min:8',
-                            'confirmed',
-                            'regex:/[a-z]/',      // must contain at least one lowercase letter
-                            'regex:/[A-Z]/',      // must contain at least one uppercase letter
-                            'regex:/[0-9]/',
-                            'max:255'],
+                'confirmed',
+                'regex:/[a-z]/',      // must contain at least one lowercase letter
+                'regex:/[A-Z]/',      // must contain at least one uppercase letter
+                'regex:/[0-9]/',
+                'max:255'],
             'valid_until' => 'date',
         ], $customMessages);
+        unset($data["hashed_username"]);
+        return $data;
     }
 }

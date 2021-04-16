@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Modules\Accounts\Entities\Company\Company;
+use Modules\Accounts\Entities\Credential\Credential;
 use Modules\Accounts\Entities\User\User;
 use Modules\Accounts\Transformers\User\UserResource;
 
@@ -212,22 +213,25 @@ class UsersController extends Controller
 
     private function validateCredentialsData(Request $request)
     {
-//        $data = array();
-//        foreach ($request['credentials'] as $credential){
-//            $credential['AES_256_username'] = encrypt ($credential['username']);
-//            array_push ($data,$credential);
-//        }
-//
-//        $credentialsData = Validator::make($data, [
-//            '*.username' => 'required|max:255',
-//            '*.AES_256_username' => 'required|max:255|unique:credentials,AES_256_username',
-//            '*.password' => 'required|max:255',
-//        ])->validate();
+        if (request()->input('credentials') && !empty(request()->input('credentials'))) {
+            $credentials_array = request()->input('credentials');
 
-        //TODO:Validation on unique username
+            foreach ($credentials_array as &$credential){
+                if (isset($credential['username']) && !empty($credential['username'])) $credential['hashed_username'] = Credential::getHashedUsername($credential['username']);
+            }
+            request()->merge([
+                'credentials' => $credentials_array,
+            ]);
+        }
+
+        $customMessages = [
+            'credentials.*.password.regex'   => 'The :attribute is invalid, password must contain at least one lowercase letter, one uppercase letter and one number',
+            'credentials.*.hashed_username.unique'   => 'This username has already been taken',
+        ];
         $credentialsData = $request->validate ([
             "credentials" => "required|array|min:1",
             'credentials.*.username' => 'required|max:255',
+            'credentials.*.hashed_username' => 'required|unique:credentials,username',
             'credentials.*.password' => ['required',
                 'required_with:credentials.*.password_confirmation',
                 'same:credentials.*.password_confirmation',
@@ -237,8 +241,11 @@ class UsersController extends Controller
                 'regex:/[0-9]/',
                 'max:255'],
             'credentials.*.password_confirmation' => 'required|min:8',
-        ]);
+        ], $customMessages);
 
+        foreach ($credentialsData['credentials'] as &$credential) {
+            unset($credential['hashed_username']);
+        }
         return $credentialsData['credentials'];
     }
 }
