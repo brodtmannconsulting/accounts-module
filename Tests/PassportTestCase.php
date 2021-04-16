@@ -107,7 +107,11 @@ class PassportTestCase extends TestCase
     static function createUserWithCredential(string $company_id, string $username, string $password)
     {
 
-        $user = User::factory()->create (['company_id' => $company_id]);
+        $user = User::factory()->create ([
+            'first_name' => 'Maxim',
+            'last_name' => 'Primak',
+            'company_id' => $company_id]
+        );
         $credential = Credential::factory()->create (self::getCredentialsData ($user, $username, $password));
         return $user;
     }
