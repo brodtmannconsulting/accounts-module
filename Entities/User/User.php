@@ -235,4 +235,11 @@ class User extends Model
         }
         return array_unique ($scopes_ids);
     }
+
+    public function getNotificationChannels() {
+        $result = array_search(true, $this->notification_channels);
+        if ($result != false) $result = array_keys($this->notification_channels, true);
+        else $result = [];
+        return $result;
+    }
 }
