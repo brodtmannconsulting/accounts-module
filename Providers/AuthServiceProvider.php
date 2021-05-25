@@ -120,6 +120,14 @@ class AuthServiceProvider extends ServiceProvider
             'certificates_list' => 'Can Access Certificates Page, and see all Certificates of ALL Companies',
             'certificates_company' => 'Can Access Certificates Page, and see Certificates ONLY of own Company',
 
+            'read_summary_data' => 'Can Access Summary on Dashboard',
+            'read_energy_data' => 'Can access Energy Page on Dashboard',
+            'read_policies_data' => 'Can access Policies Page on Dashboard',
+            'read_waste_data' => 'Can access Waste Page on Dashboard',
+            'read_water_data' => 'Can access Water Page on Dashboard',
+            'read_environment_data' => 'Can access Environment Page on Dashboard',
+            'read_air_data' => 'Can access Air Page on Dashboard',
+
         ]);
 
 
