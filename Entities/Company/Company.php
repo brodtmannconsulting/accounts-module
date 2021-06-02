@@ -5,11 +5,13 @@ namespace Modules\Accounts\Entities\Company;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Modules\Accounts\Database\factories\Company\CompanyFactory;
 use Modules\Accounts\Entities\Role\Role;
 use Modules\Accounts\Entities\Role\RoleScope;
 use Modules\Accounts\Entities\User\User;
+use Modules\Consumption\Entities\Consumption;
 use Modules\Question\Entities\Question;
 use Modules\Question\Entities\QuestionAnswer;
 
@@ -138,6 +140,27 @@ class Company extends Model
 
         $achieved_sum__weights = $not_skipped_answers->sum('achieved_weight');
         return round($achieved_sum__weights / $total_sum_question_weights,3);
+    }
+
+    /**
+     * @param Carbon|null $start_date
+     * @param Carbon|null $end_date
+     * @return float
+     */
+    public function calculateConsumptionScore (Carbon $start_date = null, Carbon $end_date = null): float
+    {
+        if (is_null($start_date) || is_null($end_date)) {
+            $start_date = now()->subMonth(12);
+            $end_date = now();
+        }
+
+        $company_consumptions = Consumption::where('company_id',$this->id)->whereDate('created_at', '>=', now()->subMonth(12))->whereDate('created_at' ,'<=', $end_date)->get();
+        $total_year_co2_footprint = $company_consumptions->sum('co2_footprint');
+        $total_year_co2_sequestration = Consumption::getMonthCO2Sequestration($this) * 12;
+        $club_co2_footprint = $total_year_co2_footprint - $total_year_co2_sequestration;
+
+        $score = Consumption::interpolateCertification($club_co2_footprint, Consumption::$avg_club_co2_footprint);
+        return round($score * 100, 2);
     }
 
 }
