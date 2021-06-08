@@ -378,7 +378,6 @@ class Company extends Model
         ];
     }
 
-
     /**
      *
      */
@@ -395,4 +394,5 @@ class Company extends Model
     {
         CompanyCertificationVariables::where('company_id', $this->id)->delete();
     }
+
 }
