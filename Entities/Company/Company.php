@@ -67,15 +67,21 @@ class Company extends Model
     {
         parent::boot();
 
-        static::creating(function ($model)
+        static::creating(function (self $model)
         {
             $model->setIdAttribute();
         });
 
-        static::deleting(function ($model)
+        static::created(function (self $model)
+        {
+            $model->storeCompanyVariables();
+        });
+
+        static::deleting(function (self $model)
         {
             $model->deleteCompanyUsers();
             $model->deleteCompaniesRoles();
+            $model->deleteCompaniesVariables();
         });
     }
 
@@ -176,10 +182,16 @@ class Company extends Model
 
         $company_consumptions = Consumption::where('company_id',$this->id)->whereDate('created_at', '>=', $start_date)->whereDate('created_at' ,'<=', $end_date)->get();
         $total_year_co2_footprint = $company_consumptions->sum('co2_footprint');
-        $total_year_co2_sequestration = Consumption::getMonthCO2Sequestration($this) * 12;
-        $club_co2_footprint = $total_year_co2_footprint - $total_year_co2_sequestration;
 
-        $score = Consumption::interpolateCertification($club_co2_footprint, Consumption::$avg_club_co2_footprint);
+        if ($total_year_co2_footprint > 0) {
+            $total_year_co2_sequestration = Consumption::getMonthCO2Sequestration($this) * 12;
+            $club_co2_footprint = $total_year_co2_footprint - $total_year_co2_sequestration;
+
+            $score = Consumption::interpolateCertification($club_co2_footprint, Consumption::$avg_club_co2_footprint);
+        }else {
+            $score = 0;
+        }
+
 
         TotalProgressConsumption::firstOrCreate([
             'value' => $score * 100,
@@ -366,8 +378,21 @@ class Company extends Model
         ];
     }
 
-    public function not_a_test_second(): void {
 
+    /**
+     *
+     */
+    private function storeCompanyVariables (): void {
+        CompanyCertificationVariables::create([
+            'company_id' => $this->id
+        ]);
     }
 
+    /**
+     *
+     */
+    private function deleteCompaniesVariables(): void
+    {
+        CompanyCertificationVariables::where('company_id', $this->id)->delete();
+    }
 }
