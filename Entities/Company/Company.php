@@ -366,4 +366,8 @@ class Company extends Model
         ];
     }
 
+    public function not_a_test(): void {
+
+    }
+
 }
