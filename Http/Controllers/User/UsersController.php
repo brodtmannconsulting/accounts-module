@@ -225,7 +225,7 @@ class UsersController extends Controller
         }
 
         $customMessages = [
-            'credentials.*.password.regex'   => 'The :attribute is invalid, password must contain at least one lowercase letter, one uppercase letter and one number',
+            'credentials.*.password.regex'   => 'The :attribute is invalid, password must contain at least one uppercase letter and one number',
             'credentials.*.hashed_username.unique'   => 'This username has already been taken',
         ];
         $credentialsData = $request->validate ([
@@ -236,7 +236,6 @@ class UsersController extends Controller
                 'required_with:credentials.*.password_confirmation',
                 'same:credentials.*.password_confirmation',
                 'min:8',
-                'regex:/[a-z]/',      // must contain at least one lowercase letter
                 'regex:/[A-Z]/',      // must contain at least one uppercase letter
                 'regex:/[0-9]/',
                 'max:255'],

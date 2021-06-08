@@ -153,7 +153,7 @@ class CredentialController extends Controller
         }
 
         $customMessages = [
-            'password.regex'   => 'The :attribute is invalid, password must contain at least one lowercase letter, one uppercase letter and one number',
+            'password.regex'   => 'The :attribute is invalid, password must contain at least one uppercase letter and one number',
             'hashed_username.unique'   => 'This username has already been taken',
         ];
         $data = request ()->validate ([
@@ -163,7 +163,6 @@ class CredentialController extends Controller
             'password' => ['required',
                 'min:8',
                 'confirmed',
-                'regex:/[a-z]/',      // must contain at least one lowercase letter
                 'regex:/[A-Z]/',      // must contain at least one uppercase letter
                 'regex:/[0-9]/',
                 'max:255'],
@@ -176,7 +175,7 @@ class CredentialController extends Controller
     private function validateUpdateData($credential_id)
     {
         $customMessages = [
-            'password.regex'   => 'The :attribute is invalid, password must contain at least one lowercase letter, one uppercase letter and one number',
+            'password.regex'   => 'The :attribute is invalid, password must contain at least one uppercase letter and one number',
             'hashed_username.unique'   => 'This username has already been taken',
         ];
 
@@ -192,7 +191,6 @@ class CredentialController extends Controller
             'hashed_username' => 'unique:credentials,username,'. $credential_id,
             'password' => ['min:8',
                 'confirmed',
-                'regex:/[a-z]/',      // must contain at least one lowercase letter
                 'regex:/[A-Z]/',      // must contain at least one uppercase letter
                 'regex:/[0-9]/',
                 'max:255'],
