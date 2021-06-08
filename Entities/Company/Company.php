@@ -365,9 +365,4 @@ class Company extends Model
             'achieved_consumption_score' => $certification_variables->consumption_certification_volume * ($consumption_score / 100),
         ];
     }
-
-    public function not_a_test_just_check(): void {
-
-    }
-
 }

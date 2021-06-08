@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Routing\Controller;
 use Modules\Accounts\Entities\Company\Company;
 use Modules\Accounts\Entities\Company\CompanyRole;
+use Modules\Accounts\Entities\Role\RoleScope;
 use Modules\Accounts\Transformers\Role\RoleResource;
 
 class CompaniesRolesController extends Controller
@@ -23,11 +24,20 @@ class CompaniesRolesController extends Controller
     public function update($company){
         $company = Company::findOrFail($company);
         $rolesData = $this->validateRequest(request ());
+        $user = auth('api')->user()->user;
         if(auth('api')->user()->cannot('update', [CompanyRole::class])){
             abort(403);
         }
         foreach ($rolesData as $role){
             CompanyRole::firstOrCreate(['company_id' => $company->id,'role_id' => $role['role_id']]);
+            $scopes_of_role = RoleScope::where('company_id', $user->company_id)->where('role_id', $role['role_id'])->get();
+            foreach ($scopes_of_role as $role_scope) {
+                RoleScope::create([
+                    'company_id' => $company->id,
+                    'role_id' => $role['role_id'],
+                    'scope_id' => $role_scope->scope_id,
+                ]);
+            }
         }
         Log::notice('Successfully updated roles of a company', ['user_id' => auth ()->user ()->user->id,
             'username' => auth ()->user ()->getHashedUsername(auth ()->user ()->username),
