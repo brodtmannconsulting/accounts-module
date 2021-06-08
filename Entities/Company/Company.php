@@ -366,7 +366,7 @@ class Company extends Model
         ];
     }
 
-    public function not_a_test(): void {
+    public function not_a_test_just_check(): void {
 
     }
 
