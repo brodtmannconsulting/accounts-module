@@ -38,7 +38,7 @@ Route::middleware(['auth:api','scope:user_account_list_self,user_account_list_co
 
 Route::middleware(['auth:api'])->group(function () {
     Route::post ('/users','User\UsersController@store')->middleware (['scope:user_account_add_company,user_account_add_all']);
-    Route::patch ('/users/{user}','User\UsersController@update')->middleware (['scope:user_account_update_self,user_account_update_company,user_account_update_all']);
+    Route::post ('/users/{user}','User\UsersController@update')->middleware (['scope:user_account_update_self,user_account_update_company,user_account_update_all']);
     Route::patch ('/update_allow_log_in/{user}','User\UsersController@updateAllowLogIn')->middleware (['scope:user_account_allowLogin_update_company,user_account_allowLogin_update_all']);
     Route::delete ('/users/{user}','User\UsersController@destroy')->middleware (['scope:user_account_destroy_company,user_account_destroy_all']);
 });

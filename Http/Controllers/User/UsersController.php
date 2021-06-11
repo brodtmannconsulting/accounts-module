@@ -6,6 +6,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Modules\Accounts\Entities\Company\Company;
@@ -64,6 +65,10 @@ class UsersController extends Controller
         }
 
         //Store Part
+        if (isset($userData['avatar'])) {
+            $userData['avatar_url'] = $this->storeAvatar($userData['avatar']);
+        }
+
         $user = User::create($userData);
         foreach ($credentialsData as $credentialData){
             unset($credentialData['password_confirmation']);
@@ -115,7 +120,13 @@ class UsersController extends Controller
             abort(403);
         }
 
-        $user->update($this->validateUserDataForUpdate($request));
+        $userData = $this->validateUserDataForUpdate($request);
+
+        if (isset($userData['avatar_url'])) {
+            $userData['avatar_url'] = $this->storeAvatar($userData['avatar_url']);
+        }
+
+        $user->update($userData);
         $user->fresh();
 
         Log::notice('Successfully updated the user', ['user_id' => auth ()->user ()->user->id,
@@ -191,6 +202,7 @@ class UsersController extends Controller
             'language' => 'max:255|in:de,en',
             'company_id' => 'required|exists:companies,id',
             'allow_log_in' => 'boolean',
+            'avatar_url' => 'image'
         ]);
     }
 
@@ -201,6 +213,7 @@ class UsersController extends Controller
             'last_name' => 'max:255',
             'email' => 'max:255|email',
             'language' => 'max:255|in:de,en',
+            'avatar_url' => 'image'
         ]);
     }
 
@@ -246,5 +259,10 @@ class UsersController extends Controller
             unset($credential['hashed_username']);
         }
         return $credentialsData['credentials'];
+    }
+
+    private function storeAvatar($avatar)
+    {
+        return Storage::putFile('avatars', $avatar, 'public');
     }
 }

@@ -3,6 +3,7 @@
 namespace Modules\Accounts\Transformers\User;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 use Modules\Accounts\Transformers\Company\CompanyResource;
 use Modules\Accounts\Transformers\Credential\CredentialResource;
 use Modules\Accounts\Transformers\Role\RoleResource;
@@ -24,6 +25,12 @@ class UserResource extends JsonResource
             $allow_log_in_for_humans = 'Nein';
         }
 
+        if ($this->avatar_url) {
+            $avatar = Storage::url($this->avatar_url);
+        } else {
+            $avatar = null;
+        }
+
         return [
             'data' => [
                 'user_id' => $this->id,
@@ -41,8 +48,9 @@ class UserResource extends JsonResource
                 'company' => new CompanyResource($this->company),
                 'roles' =>  RoleResource::collection($this->roles),
                 'scopes' => $this->getScopes(),
-                'scopes_collection' => ScopeResource::collection ($this->getScopesCollection())
-                ],
+                'scopes_collection' => ScopeResource::collection ($this->getScopesCollection()),
+                'avatar' => $avatar
+            ],
             'links' => [
                 'self' => $this->path()
             ]
