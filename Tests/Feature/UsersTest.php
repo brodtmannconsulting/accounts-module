@@ -105,7 +105,7 @@ class UsersTest extends PassportTestCase
     /** @test */
     public function a_user_can_be_updated(){
         Passport::actingAs($this->user->credentials()->first(),$this->user->getScopes());
-        $response = $this->patch('api/users/'.$this->user->id,['first_name' => 'new_first_name']);
+        $response = $this->post('api/users/'.$this->user->id,['first_name' => 'new_first_name']);
         $response->assertStatus (Response::HTTP_OK);
         $user = User::findOrFail($response->getOriginalContent ()->id);
         $this->assertEquals ('new_first_name',decrypt ($user->first_name));

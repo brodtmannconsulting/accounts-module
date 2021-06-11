@@ -193,7 +193,7 @@ class UserPolicyTest extends PassportTestCase
         $user = self::createUserWithRole('maximuss','123456789',$this->company->id,'admin');
         $user_of_his_company = self::createUserWithRole('another_user_of_company','123456789',$this->company->id,'user');
         Passport::actingAs($user->credentials()->first(),$user->getScopes());
-        $response = $this->patch('api/users/'.$user_of_his_company->id,['first_name' => 'new_first_name']);
+        $response = $this->post('api/users/'.$user_of_his_company->id,['first_name' => 'new_first_name']);
         $response->assertStatus (Response::HTTP_OK);
     }
 
@@ -207,7 +207,7 @@ class UserPolicyTest extends PassportTestCase
         $user = self::createUserWithRole('maximuss','123456789',$this->company->id,'admin');
         $user_of_another_company = self::createUserWithRole('another_user_of_company','123456789',$new_company->id,'user');
         Passport::actingAs($user->credentials()->first(),$user->getScopes());
-        $response = $this->patch('api/users/'.$user_of_another_company->id,['first_name' => 'new_first_name']);
+        $response = $this->post('api/users/'.$user_of_another_company->id,['first_name' => 'new_first_name']);
         $response->assertStatus (Response::HTTP_FORBIDDEN);
     }
 
@@ -219,7 +219,7 @@ class UserPolicyTest extends PassportTestCase
     {
         $user = self::createUserWithRole('maximuss','123456789',$this->company->id,'user');
         Passport::actingAs($user->credentials()->first(),$user->getScopes());
-        $response = $this->patch('api/users/'.$user->id,['first_name' => 'new_first_name']);
+        $response = $this->post('api/users/'.$user->id,['first_name' => 'new_first_name']);
         $response->assertStatus (Response::HTTP_OK);
     }
 
@@ -232,7 +232,7 @@ class UserPolicyTest extends PassportTestCase
         $user = self::createUserWithRole('maximuss','123456789',$this->company->id,'user');
         $user_of_his_company = self::createUserWithRole('another_user_of_company','123456789',$this->company->id,'admin');
         Passport::actingAs($user->credentials()->first(),$user->getScopes());
-        $response = $this->patch('api/users/'.$user_of_his_company->id,['first_name' => 'new_first_name']);
+        $response = $this->post('api/users/'.$user_of_his_company->id,['first_name' => 'new_first_name']);
         $response->assertStatus (Response::HTTP_FORBIDDEN);
     }
 
@@ -246,7 +246,7 @@ class UserPolicyTest extends PassportTestCase
         $user = self::createUserWithRole('maximuss','123456789',$this->company->id,'user');
         $user_of_another_company = self::createUserWithRole('another_user_of_company','123456789',$new_company->id,'admin');
         Passport::actingAs($user->credentials()->first(),$user->getScopes());
-        $response = $this->patch('api/users/'.$user_of_another_company->id,['first_name' => 'new_first_name']);
+        $response = $this->post('api/users/'.$user_of_another_company->id,['first_name' => 'new_first_name']);
         $response->assertStatus (Response::HTTP_FORBIDDEN);
     }
 

@@ -96,7 +96,7 @@ class CompanyPolicyTest extends CompanyTestCase
     public function an_admin_user_can_update_own_company()
     {
         $user = $this->createUserWithRole('maximuss','123456789',$this->company->id,'admin');
-        $response = $this->patch('/api/companies/'.$this->company->id, ['name' => 'Updated']);
+        $response = $this->post('/api/companies/'.$this->company->id, ['name' => 'Updated']);
         $response->assertStatus(Response::HTTP_OK);
     }
 
@@ -108,7 +108,7 @@ class CompanyPolicyTest extends CompanyTestCase
     {
         $new_company = Company::factory()->create();
         $user = $this->createUserWithRole('maximuss','123456789',$this->company->id,'admin');
-        $response = $this->patch('/api/companies/'.$new_company->id, ['name' => 'Updated']);
+        $response = $this->post('/api/companies/'.$new_company->id, ['name' => 'Updated']);
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
@@ -121,9 +121,9 @@ class CompanyPolicyTest extends CompanyTestCase
     {
         $new_company = Company::factory()->create();
         $user = $this->createUserWithRole('maximuss','123456789',$this->company->id,'user');
-        $response = $this->patch('/api/companies/'.$this->company->id, ['name' => 'Updated']);
+        $response = $this->post('/api/companies/'.$this->company->id, ['name' => 'Updated']);
         $response->assertStatus(Response::HTTP_FORBIDDEN);
-        $response = $this->patch('/api/companies/'.$new_company->id, ['name' => 'Updated']);
+        $response = $this->post('/api/companies/'.$new_company->id, ['name' => 'Updated']);
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 

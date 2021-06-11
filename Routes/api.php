@@ -24,7 +24,7 @@ Route::prefix('auth')->group(function () {
 Route::middleware(['auth:api'])->group(function () {
     Route::get ('/companies','Company\CompanyController@index')->middleware (['scope:system_company_list_all']);
     Route::post ('/companies','Company\CompanyController@store')->middleware (['scope:system_company_add']);
-    Route::patch ('/companies/{company}','Company\CompanyController@update')->middleware (['scope:system_company_update_all,system_company_update_company']);
+    Route::post ('/companies/{company}','Company\CompanyController@update')->middleware (['scope:system_company_update_all,system_company_update_company']);
     Route::get ('/companies/{company}','Company\CompanyController@show')->middleware (['scope:system_company_list_all,system_company_list_company']);
     Route::delete ('/companies/{company}','Company\CompanyController@destroy')->middleware (['scope:system_company_destroy']);
 });

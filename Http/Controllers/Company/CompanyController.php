@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Modules\Accounts\Entities\Company\Company;
 use Modules\Accounts\Transformers\Company\CompanyResource;
 
@@ -91,7 +92,13 @@ class CompanyController extends Controller
         if(auth('api')->user()->cannot('update', $company)){
             abort(403);
         }
-        $company->update($this->validateDataForUpdate());
+        $data = $this->validateDataForUpdate();
+
+        if (isset($data['avatar_url'])) {
+            $data['avatar_url'] = $this->storeAvatar($data['avatar_url']);
+        }
+
+        $company->update($data);
         $company->fresh();
 
         Log::notice('Successfully updated the company', ['credential_id' => auth ('api')->user ()->id,
@@ -145,7 +152,13 @@ class CompanyController extends Controller
         return request ()->validate ([
             'name' => 'max:255',
             'description' => 'max:255',
-            'company_website' => 'url|max:255'
+            'company_website' => 'url|max:255',
+            'avatar_url' => 'image',
         ]);
+    }
+
+    private function storeAvatar($avatar)
+    {
+        return Storage::putFile('avatars/companies', $avatar, 'public');
     }
 }

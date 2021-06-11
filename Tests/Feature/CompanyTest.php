@@ -80,7 +80,7 @@ class CompanyTest extends CompanyTestCase
     {
         $company_name = 'Updated Name';
         $this->withoutExceptionHandling ();
-        $response = $this->patch ('/api/companies/' . $this->company->id, ['name' => $company_name]);
+        $response = $this->post ('/api/companies/' . $this->company->id, ['name' => $company_name]);
         $this->company->name = $company_name;
         $response->assertStatus (Response::HTTP_OK)->assertJson ($this->companyData ($this->company));
     }
