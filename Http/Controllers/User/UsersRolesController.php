@@ -169,7 +169,7 @@ class UsersRolesController extends Controller
                         $query->where('company_id', $user->company_id);
                     }),
                 ],
-            ])->validate();
+            ], ['This company does not have access to chosen role.'])->validate();
         }
     }
 }
