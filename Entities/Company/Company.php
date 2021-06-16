@@ -229,12 +229,6 @@ class Company extends Model
 
         $score = Consumption::interpolateCertification($total_year_club_footprint, Consumption::$avg_club_co2_footprint);
 
-        TotalProgressConsumption::firstOrCreate([
-            'value' => $score * 100,
-            'company_id' => $this->id,
-            'created_at' => now()->toDateString(),
-        ]);
-
         return round($score * 100, 2);
     }
 
@@ -429,6 +423,14 @@ class Company extends Model
     private function deleteCompaniesVariables(): void
     {
         CompanyCertificationVariables::where('company_id', $this->id)->delete();
+    }
+
+    public function saveConsumptionProgress($score): TotalProgressConsumption {
+        return TotalProgressConsumption::firstOrCreate([
+            'value' => $score,
+            'company_id' => $this->id,
+            'created_at' => now()->toDateString(),
+        ]);
     }
 
 }
