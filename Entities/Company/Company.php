@@ -202,9 +202,9 @@ class Company extends Model
             ];
         }
 
-        $company_consumptions = Consumption::where('company_id',$this->id)->whereDate('created_at', '>=', $start_date)->whereDate('created_at' ,'<=', $end_date)->get();
+        $company_consumptions = Consumption::where('company_id',$this->id)->whereDate('start_date', '>=', $start_date)->whereDate('end_date' ,'<=', $end_date)->get();
         $grouped_consumptions_by_months = $company_consumptions->groupBy(function ($consumption) {
-            return $consumption->created_at->month;
+            return $consumption->end_date->month;
         });
 
         foreach ($grouped_consumptions_by_months as $key => $month_consumptions) {
@@ -223,8 +223,10 @@ class Company extends Model
         }
 
         $total_year_club_footprint = 0;
+        $total_year_co2_footprint = 0;
         foreach ($months as $month) {
             $total_year_club_footprint += $month['co2_footprint_minus_co2_sequestration'];
+            $total_year_co2_footprint += $month['co2_footprint'];
         }
 
         $score = Consumption::interpolateCertification($total_year_club_footprint, Consumption::$avg_club_co2_footprint);
