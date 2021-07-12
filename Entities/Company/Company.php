@@ -208,6 +208,7 @@ class Company extends Model
         foreach ($months as &$month) {
             $month = [
                 'co2_footprint' => null,
+                'co2_sequestration' => null,
                 'co2_footprint_minus_co2_sequestration' => null,
             ];
         }
@@ -241,7 +242,6 @@ class Company extends Model
             $total_year_co2_footprint += $month['co2_footprint'];
             $total_year_co2_sequestration += $month['co2_sequestration'];
         }
-
 
         return ['total_co2_footprint' => $total_year_co2_footprint, 'co2_sequestration' => $total_year_co2_sequestration, 'co2_footprint_minus_co2_sequestration' => $total_year_club_footprint];
     }
