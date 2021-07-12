@@ -2,6 +2,7 @@
 
 namespace Modules\Accounts\Entities\Company;
 
+use Carbon\CarbonPeriod;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -176,19 +177,20 @@ class Company extends Model
     public function calculateConsumptionScore (Carbon $start_date = null, Carbon $end_date = null): float
     {
         if (is_null($start_date) || is_null($end_date)) {
-            $start_date = now()->subMonth(12);
+            $start_date = now()->subMonth(12)->startOfMonth();
             $end_date = now();
         }
 
         $co2Footprint = $this->calculateCO2Footprint($start_date, $end_date);
         $total_year_club_footprint = $co2Footprint['co2_footprint_minus_co2_sequestration'];
 
-        $score = Consumption::interpolateCertification($total_year_club_footprint, $this->getClubAverageFootprintMinusSequestrationValue());
+        $score = Consumption::interpolateCertification($total_year_club_footprint, $this->getClubAverageFootprintMinusSequestrationValue() * (($start_date->diffInDays($end_date) + 1) / 365));
 
         return round($score * 100, 2);
     }
 
     public function calculateCO2Footprint(Carbon $start_date, Carbon $end_date) {
+
 
         $months = [
             1 => [],
@@ -205,15 +207,27 @@ class Company extends Model
             12 => [],
         ];
 
-        foreach ($months as &$month) {
-            $month = [
-                'co2_footprint' => null,
-                'co2_sequestration' => null,
-                'co2_footprint_minus_co2_sequestration' => null,
-            ];
+        $date_range = [];
+
+        foreach ($months as $key => &$month) {
+            $period = CarbonPeriod::create($start_date->toDateString(), $end_date->toDateString());
+            foreach ($period as $date) {
+                array_push($date_range, $date->month);
+            }
+            if (in_array($key, $date_range)) {
+                $month = [
+                    'co2_footprint' => null,
+                    'co2_sequestration' => null,
+                    'co2_footprint_minus_co2_sequestration' => null,
+                ];
+            } else {
+                unset($months[$key]);
+            }
         }
 
-        $company_consumptions = Consumption::where('company_id',$this->id)->whereDate('start_date', '>=', $start_date)->whereDate('end_date' , '<=' , $end_date)->get();
+        $company_consumptions = Consumption::where('company_id',$this->id)->whereDate('end_date', '>=', $start_date)->whereDate('end_date' , '<=' , $end_date)->get();
+
+//        dd($start_date->toDateString(), $end_date->toDateString(), $company_consumptions->count());
 
         $grouped_consumptions_by_months = $company_consumptions->groupBy(function ($consumption) {
             return $consumption->end_date->month;
@@ -221,23 +235,21 @@ class Company extends Model
 
         foreach ($grouped_consumptions_by_months as $key => $month_consumptions) {
             $months[$key]['co2_footprint'] = $month_consumptions->sum('co2_footprint');
-        }
 
-        //TODO: 1 Loop
-        for ($i = 1; $i <= sizeof($months); $i++) {
-            if (is_null($months[$i]['co2_footprint'])) {
-                $months[$i]['co2_footprint_minus_co2_sequestration'] = $this->getClubAverageFootprintMinusSequestrationValue() / 12 * 1.2;
+            if (is_null($months[$key]['co2_footprint'])) {
+                $months[$key]['co2_footprint_minus_co2_sequestration'] = $this->getClubAverageFootprintMinusSequestrationValue() / 12 * 1.2;
             } else {
                 $month_co2_sequestration = Consumption::getMonthCO2Sequestration($this);
-                $months[$i]['co2_sequestration'] = $month_co2_sequestration;
-                $club_co2_footprint = $months[$i]['co2_footprint'] - $month_co2_sequestration;
-                $months[$i]['co2_footprint_minus_co2_sequestration'] = $club_co2_footprint;
+                $months[$key]['co2_sequestration'] = $month_co2_sequestration;
+                $club_co2_footprint = $months[$key]['co2_footprint'] - $month_co2_sequestration;
+                $months[$key]['co2_footprint_minus_co2_sequestration'] = $club_co2_footprint;
             }
         }
 
         $total_year_club_footprint = 0;
         $total_year_co2_footprint = 0;
         $total_year_co2_sequestration = 0;
+
         foreach ($months as $month) {
             $total_year_club_footprint += $month['co2_footprint_minus_co2_sequestration'];
             $total_year_co2_footprint += $month['co2_footprint'];
@@ -288,11 +300,6 @@ class Company extends Model
      * @return float
      */
     public function calculateTotalCertificationScore (Carbon $start_date = null, Carbon $end_date = null): float {
-
-        if (is_null($start_date) || is_null($end_date)) {
-            $start_date = now()->subMonth(12);
-            $end_date = now();
-        }
 
         $total_score_for_each_block = $this->getTotalScoreForEachBlock($start_date, $end_date);
 
