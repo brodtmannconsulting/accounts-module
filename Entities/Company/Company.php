@@ -180,7 +180,6 @@ class Company extends Model
             $end_date = now();
         }
 
-
         $co2Footprint = $this->calculateCO2Footprint($start_date, $end_date);
         $total_year_club_footprint = $co2Footprint['co2_footprint_minus_co2_sequestration'];
 
@@ -190,6 +189,7 @@ class Company extends Model
     }
 
     public function calculateCO2Footprint(Carbon $start_date, Carbon $end_date) {
+
         $months = [
             1 => [],
             2 => [],
@@ -213,7 +213,8 @@ class Company extends Model
             ];
         }
 
-        $company_consumptions = Consumption::where('company_id',$this->id)->whereDate('start_date', '>=', $start_date)->whereDate('end_date' ,'<=', $end_date)->get();
+        $company_consumptions = Consumption::where('company_id',$this->id)->whereDate('start_date', '>=', $start_date)->whereDate('end_date' , '<=' , $end_date)->get();
+
         $grouped_consumptions_by_months = $company_consumptions->groupBy(function ($consumption) {
             return $consumption->end_date->month;
         });
