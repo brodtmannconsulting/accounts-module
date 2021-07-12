@@ -450,8 +450,11 @@ class Company extends Model
 
     private function getRoundsOfGolfPlayed()
     {
+        $result = Consumption::$avg_club_rounds_of_golf_played;
         $question = Question::where('old_id', 'JU6VAXH5V7S4FUSRD4XB')->first();
-        return $question->companyQuestionAnswer($this)->first()->value;
+        $answer = $question->companyQuestionAnswer($this)->first();
+        if ($answer) $result = $answer->value;
+        return $result;
     }
 
     private function getClubAverageFootprintMinusSequestrationValue()
