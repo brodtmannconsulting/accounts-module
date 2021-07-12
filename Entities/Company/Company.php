@@ -183,7 +183,7 @@ class Company extends Model
         $co2Footprint = $this->calculateCO2Footprint($start_date, $end_date);
         $total_year_club_footprint = $co2Footprint['co2_footprint_minus_co2_sequestration'];
 
-        $score = Consumption::interpolateCertification($total_year_club_footprint, Consumption::$avg_club_co2_footprint);
+        $score = Consumption::interpolateCertification($total_year_club_footprint, $this->getClubAverageFootprintMinusSequestrationValue());
 
         return round($score * 100, 2);
     }
@@ -223,10 +223,10 @@ class Company extends Model
             $months[$key]['co2_footprint'] = $month_consumptions->sum('co2_footprint');
         }
 
-
+        //TODO: 1 Loop
         for ($i = 1; $i <= sizeof($months); $i++) {
             if (is_null($months[$i]['co2_footprint'])) {
-                $months[$i]['co2_footprint_minus_co2_sequestration'] = Consumption::$avg_club_co2_footprint / 12 * 1.2;
+                $months[$i]['co2_footprint_minus_co2_sequestration'] = $this->getClubAverageFootprintMinusSequestrationValue() / 12 * 1.2;
             } else {
                 $month_co2_sequestration = Consumption::getMonthCO2Sequestration($this);
                 $months[$i]['co2_sequestration'] = $month_co2_sequestration;
@@ -446,6 +446,17 @@ class Company extends Model
             'company_id' => $this->id,
             'created_at' => now()->toDateString(),
         ]);
+    }
+
+    private function getRoundsOfGolfPlayed()
+    {
+        $question = Question::where('old_id', 'JU6VAXH5V7S4FUSRD4XB')->first();
+        return $question->companyQuestionAnswer($this)->first()->value;
+    }
+
+    private function getClubAverageFootprintMinusSequestrationValue()
+    {
+        return $this->getRoundsOfGolfPlayed() * 12 / Consumption::$avg_club_rounds_of_golf_played * Consumption::$avg_club_co2_footprint;
     }
 
 }
