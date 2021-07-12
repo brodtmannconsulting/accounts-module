@@ -180,6 +180,16 @@ class Company extends Model
             $end_date = now();
         }
 
+
+        $co2Footprint = $this->calculateCO2Footprint($start_date, $end_date);
+        $total_year_club_footprint = $co2Footprint['co2_footprint_minus_co2_sequestration'];
+
+        $score = Consumption::interpolateCertification($total_year_club_footprint, Consumption::$avg_club_co2_footprint);
+
+        return round($score * 100, 2);
+    }
+
+    public function calculateCO2Footprint(Carbon $start_date, Carbon $end_date) {
         $months = [
             1 => [],
             2 => [],
@@ -217,6 +227,7 @@ class Company extends Model
                 $months[$i]['co2_footprint_minus_co2_sequestration'] = Consumption::$avg_club_co2_footprint / 12 * 1.2;
             } else {
                 $month_co2_sequestration = Consumption::getMonthCO2Sequestration($this);
+                $months[$i]['co2_sequestration'] = $month_co2_sequestration;
                 $club_co2_footprint = $months[$i]['co2_footprint'] - $month_co2_sequestration;
                 $months[$i]['co2_footprint_minus_co2_sequestration'] = $club_co2_footprint;
             }
@@ -224,14 +235,15 @@ class Company extends Model
 
         $total_year_club_footprint = 0;
         $total_year_co2_footprint = 0;
+        $total_year_co2_sequestration = 0;
         foreach ($months as $month) {
             $total_year_club_footprint += $month['co2_footprint_minus_co2_sequestration'];
             $total_year_co2_footprint += $month['co2_footprint'];
+            $total_year_co2_sequestration += $month['co2_sequestration'];
         }
 
-        $score = Consumption::interpolateCertification($total_year_club_footprint, Consumption::$avg_club_co2_footprint);
 
-        return round($score * 100, 2);
+        return ['total_co2_footprint' => $total_year_co2_footprint, 'co2_sequestration' => $total_year_co2_sequestration, 'co2_footprint_minus_co2_sequestration' => $total_year_club_footprint];
     }
 
 
