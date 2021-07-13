@@ -237,9 +237,10 @@ class User extends Model
     }
 
     public function getNotificationChannels() {
-        $result = array_search(true, $this->notification_channels);
-        if ($result != false) $result = array_keys($this->notification_channels, true);
-        else $result = [];
-        return $result;
+//        $result = array_search(true, $this->notification_channels);
+//        if ($result != false) $result = array_keys($this->notification_channels, true);
+//        else $result = [];
+//        return $result;
+        return ['database'];
     }
 }
