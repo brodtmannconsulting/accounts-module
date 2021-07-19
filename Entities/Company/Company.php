@@ -177,8 +177,8 @@ class Company extends Model
     public function calculateConsumptionScore (Carbon $start_date = null, Carbon $end_date = null): float
     {
         if (is_null($start_date) || is_null($end_date)) {
-            $start_date = now()->subMonth(12)->startOfMonth();
-            $end_date = now();
+            $start_date = now()->subMonth(13)->startOfMonth();
+            $end_date = now()->subMonth(2)->endOfMonth();
         }
 
         $co2Footprint = $this->calculateCO2Footprint($start_date, $end_date);
@@ -189,9 +189,13 @@ class Company extends Model
         return round($score * 100, 2);
     }
 
-    public function calculateCO2Footprint(Carbon $start_date, Carbon $end_date) {
-
-
+    /**
+     * @param Carbon $start_date
+     * @param Carbon $end_date
+     * @return array
+     */
+    public function calculateCO2Footprint(Carbon $start_date, Carbon $end_date): array
+    {
         $months = [
             1 => [],
             2 => [],
@@ -237,7 +241,7 @@ class Company extends Model
             $months[$key]['co2_footprint'] = $month_consumptions->sum('co2_footprint');
 
             if (is_null($months[$key]['co2_footprint'])) {
-                $months[$key]['co2_footprint_minus_co2_sequestration'] = $this->getClubAverageFootprintMinusSequestrationValue() / 12 * 1.2;
+                $months[$key]['co2_footprint_minus_co2_sequestration'] = $this->getClubAverageFootprintMinusSequestrationValue() / 12 * 1.3;
             } else {
                 $month_co2_sequestration = Consumption::getMonthCO2Sequestration($this);
                 $months[$key]['co2_sequestration'] = $month_co2_sequestration;
@@ -256,7 +260,13 @@ class Company extends Model
             $total_year_co2_sequestration += $month['co2_sequestration'];
         }
 
-        return ['total_co2_footprint' => $total_year_co2_footprint, 'co2_sequestration' => $total_year_co2_sequestration, 'co2_footprint_minus_co2_sequestration' => $total_year_club_footprint];
+        return [
+            'total_co2_footprint' => $total_year_co2_footprint,
+            'co2_sequestration' => $total_year_co2_sequestration,
+            'co2_footprint_minus_co2_sequestration' => $total_year_club_footprint,
+            'each_tree_costs' => Consumption::$each_tree,
+            'target' => $this->getClubAverageFootprintMinusSequestrationValue(),
+        ];
     }
 
 
