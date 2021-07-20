@@ -10,6 +10,8 @@ class CompanyTestCase extends PassportTestCase
             'name' =>  'NEW COMPANY',
             'description' => 'new description',
             'company_website' =>  'https://www.bahn.de/p/view/index.shtml',
+            'city' =>  'Moscow',
+            'country_code' =>  'RU',
         ];
     }
 }

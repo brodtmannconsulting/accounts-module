@@ -143,7 +143,9 @@ class CompanyController extends Controller
         return request ()->validate ([
             'name' => 'required|max:255',
             'description' => 'required|max:255',
-            'company_website' => 'required|url|max:255'
+            'company_website' => 'required|url|max:255',
+            'city' => 'required|string',
+            'country_code' => 'required|string',
         ]);
     }
 
@@ -154,6 +156,8 @@ class CompanyController extends Controller
             'description' => 'max:255',
             'company_website' => 'url|max:255',
             'avatar_url' => 'image',
+            'city' => 'string',
+            'country_code' => 'string',
         ]);
     }
 

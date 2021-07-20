@@ -29,7 +29,9 @@ class CompanyResource extends JsonResource
                 'company_website' => $this->company_website,
                 'roles' => RoleResource::collection ($this->roles),
                 'created_at' => $this->created_at->format('d-m-Y H:i'),
-                'avatar' => $avatar
+                'avatar' => $avatar,
+                'city' => $this->city,
+                'country_code' => $this->country_code,
             ],
             'links' => [
                 'self' => $this->path()

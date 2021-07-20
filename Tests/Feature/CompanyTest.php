@@ -34,6 +34,8 @@ class CompanyTest extends CompanyTestCase
                 'name' => $company->name,
                 'description' => $company->description,
                 'company_website' => $company->company_website,
+                'city' => $company->city,
+                'country_code' => $company->country_code,
                 // 'roles' => RoleResource::collection ($this->company->roles),
                 'created_at' => $company->created_at->format ('d-m-Y H:i'),
             ],

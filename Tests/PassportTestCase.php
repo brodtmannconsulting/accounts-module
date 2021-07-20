@@ -108,9 +108,9 @@ class PassportTestCase extends TestCase
     {
 
         $user = User::factory()->create ([
-            'first_name' => 'Maxim',
-            'last_name' => 'Primak',
-            'company_id' => $company_id]
+                'first_name' => 'Maxim',
+                'last_name' => 'Primak',
+                'company_id' => $company_id]
         );
         $credential = Credential::factory()->create (self::getCredentialsData ($user, $username, $password));
         return $user;

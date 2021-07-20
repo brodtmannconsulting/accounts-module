@@ -25,6 +25,8 @@ class CompanyFactory extends Factory
             'name' => $this->faker->company,
             'description' => 'description',
             'company_website' => $this->faker->url,
+            'city' => $this->faker->city,
+            'country_code' => $this->faker->countryCode,
         ];
     }
 }
