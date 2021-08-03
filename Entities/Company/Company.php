@@ -104,6 +104,10 @@ class Company extends Model
         return $this->hasMany (User::class);
     }
 
+    public function answers(){
+        return $this->hasMany (QuestionAnswer::class, 'related_to');
+    }
+
     /**
      * The roles that belong to the company.
      */
@@ -137,37 +141,6 @@ class Company extends Model
         return $this->hasOne (CompanyCertificationVariables::class);
     }
 
-
-    /**
-     * @param $question_type_id
-     * @param null $category_id
-     * @return float
-     */
-    public function calculateQuestionnaireScore ($question_type_id, $category_id = null): float
-    {
-        $question_ids = Question::where('question_type_id', $question_type_id);
-        if ($category_id) $question_ids->where('category_id', $category_id);
-        $question_ids = $question_ids->pluck ('id');
-
-        $answers = QuestionAnswer::where('related_to', $this->id)->whereIn('question_id', $question_ids)->with('question')->get();
-
-        $not_skipped_answers = $answers->filter(function ($answer) {
-            return $answer->skipped == 0;
-        });
-
-        $skipped_answers = $answers->filter(function ($answer) {
-            return $answer->skipped == 1;
-        });
-
-        $total_sum_question_weights = Question::where('question_type_id', $question_type_id)
-            ->whereNotIn('id', $skipped_answers->pluck('question_id'));
-
-        if ($category_id) $total_sum_question_weights->where('category_id', $category_id);
-        $total_sum_question_weights = $total_sum_question_weights->sum('question_weight');
-
-        $achieved_sum__weights = $not_skipped_answers->sum('achieved_weight');
-        return round($achieved_sum__weights / $total_sum_question_weights,3);
-    }
 
     /**
      * @param Carbon|null $start_date
@@ -243,7 +216,7 @@ class Company extends Model
             if (is_null($months[$key]['co2_footprint'])) {
                 $months[$key]['co2_footprint_minus_co2_sequestration'] = $this->getClubAverageFootprintMinusSequestrationValue() / 12 * 1.3;
             } else {
-                $month_co2_sequestration = Consumption::getMonthCO2Sequestration($this);
+                $month_co2_sequestration = Consumption::getMonthCO2Sequestration($this->id);
                 $months[$key]['co2_sequestration'] = $month_co2_sequestration;
                 $club_co2_footprint = $months[$key]['co2_footprint'] - $month_co2_sequestration;
                 $months[$key]['co2_footprint_minus_co2_sequestration'] = $club_co2_footprint;
@@ -269,47 +242,12 @@ class Company extends Model
         ];
     }
 
-
     /**
-     * @param Carbon|null $start_date
-     * @param Carbon|null $end_date
+     * @param Carbon $start_date
+     * @param Carbon $end_date
      * @return float
      */
-    public function calculateInitiativesAndEngagementScore (Carbon $start_date = null, Carbon $end_date = null): float {
-
-        if (is_null($start_date) || is_null($end_date)) {
-            $start_date = now()->subMonth(12);
-            $end_date = now();
-        }
-        $score = 0;
-        $users = $this->users;
-
-        $question_type = QuestionType::where('name', 'Initiative')->first();
-        $questions = Question::where('suggestion', 1)
-            ->whereNotNull('approved_at')
-            ->whereIn('created_by', $users->pluck('id'))
-            ->whereDate('created_at', '>=', $start_date)
-            ->whereDate('created_at' ,'<=', $end_date)
-            ->get();
-        $company_certifications_vars = CompanyCertificationVariables::where('company_id', $this->id)->first();
-        $score += $questions->count() * $company_certifications_vars->suggestion_points_volume;
-
-        TotalProgress::firstOrCreate([
-            'value' => $score,
-            'company_id' => $this->id,
-            'question_type_id' => $question_type->id,
-            'created_at' => now()->toDateString(),
-        ]);
-
-        return $score;
-    }
-
-    /**
-     * @param Carbon|null $start_date
-     * @param Carbon|null $end_date
-     * @return float
-     */
-    public function calculateTotalCertificationScore (Carbon $start_date = null, Carbon $end_date = null): float {
+    public function calculateTotalCertificationScore (Carbon $start_date, Carbon $end_date): float {
 
         $total_score_for_each_block = $this->getTotalScoreForEachBlock($start_date, $end_date);
 
@@ -337,44 +275,37 @@ class Company extends Model
     }
 
     /**
-     * @param Carbon|null $start_date
-     * @param Carbon|null $end_date
+     * @param Carbon $date
      * @return float
      */
-    private function calculateSustainabilityScore(): float
+    private function getSustainabilityScore(Carbon $date): float
     {
         $question_type = QuestionType::where('name', 'SignUp')->first();
-        return $this->calculateQuestionnaireTotalScore($question_type);
+        return $this->getQuestionnaireTotalScore($question_type, $date);
     }
 
     /**
-     * @param Carbon|null $start_date
-     * @param Carbon|null $end_date
+     * @param Carbon $date
      * @return float
      */
-    private function calculateResiliencyScore(): float
+    private function getResiliencyScore(Carbon $date): float
     {
         $question_type = QuestionType::where('name', 'Resiliency')->first();
-        return $this->calculateQuestionnaireTotalScore($question_type);
+        return $this->getQuestionnaireTotalScore($question_type, $date);
     }
 
     /**
      * @param QuestionType $question_type
+     * @param Carbon $date
      * @return float|int
      */
-    private function calculateQuestionnaireTotalScore(QuestionType $question_type): float
+    public function getQuestionnaireTotalScore(QuestionType $question_type, Carbon $date): float
     {
-        $score = $this->calculateQuestionnaireScore($question_type->id);
-        $score = round ($score * 100, 2);
-
-        TotalProgress::firstOrCreate([
-            'value' => $score,
-            'company_id' => $this->id,
-            'question_type_id' => $question_type->id,
-            'created_at' => now()->toDateString(),
-        ]);
-
-        return $score;
+        return TotalProgress::where('company_id', $this->id)
+            ->where('question_type_id', $question_type->id)
+            ->where('updated_at', '<=', $date)
+            ->orderBy('updated_at', 'DESC')
+            ->first()->value;
     }
 
 
@@ -383,17 +314,17 @@ class Company extends Model
      */
     public function getCurrentCertificate (): ?InternalCertification
     {
-        $total_score = $this->calculateTotalCertificationScore();
+        $total_score = $this->calculateTotalCertificationScore(now()->subYear(), now());
         $internal_certificates = InternalCertification::where('certification_weight', '<=', $total_score)->with('certification')->get();
         return $internal_certificates->where('certification_weight', $internal_certificates->max('certification_weight'))->first();
     }
 
     /**
-     * @return InternalCertification
+     * @return InternalCertification | null
      */
-    public function getNextCertificate () : InternalCertification
+    public function getNextCertificate () : ?InternalCertification
     {
-        $total_score = $this->calculateTotalCertificationScore();
+        $total_score = $this->calculateTotalCertificationScore(now()->subYear(), now());
         $internal_certificates = InternalCertification::where('certification_weight', '>=', $total_score)->with('certification')->get();
         return $internal_certificates->where('certification_weight', $internal_certificates->min('certification_weight'))->first();
     }
@@ -403,22 +334,23 @@ class Company extends Model
      */
     public function getAllAchievedInternalCertificates () : Collection
     {
-        $total_score = $this->calculateTotalCertificationScore();
+        $total_score = $this->calculateTotalCertificationScore(now()->subYear(), now());
         return InternalCertification::where('certification_weight', '<=', $total_score)->with('certification')->get();
     }
 
     /**
-     * @param Carbon|null $start_date
-     * @param Carbon|null $end_date
+     * @param Carbon $start_date
+     * @param Carbon $end_date
      * @return array
      */
-    public function getTotalScoreForEachBlock(?Carbon $start_date, ?Carbon $end_date): array
+    public function getTotalScoreForEachBlock(Carbon $start_date, Carbon $end_date): array
     {
+        $initiative_question_type = QuestionType::where('name', 'Initiative')->first();
         return [
-            'sustainability_score' => $this->calculateSustainabilityScore(),
-            'resiliency_score' => $this->calculateResiliencyScore(),
+            'sustainability_score' => $this->getSustainabilityScore($end_date),
+            'resiliency_score' => $this->getResiliencyScore($end_date),
             'consumption_score' => $this->calculateConsumptionScore($start_date, $end_date),
-            'initiatives_and_engagement_score' => $this->calculateInitiativesAndEngagementScore($start_date, $end_date),
+            'initiatives_and_engagement_score' => $this->getQuestionnaireTotalScore($initiative_question_type, $end_date)
         ];
     }
 
@@ -474,7 +406,7 @@ class Company extends Model
         return $result;
     }
 
-    private function getClubAverageFootprintMinusSequestrationValue()
+    public function getClubAverageFootprintMinusSequestrationValue()
     {
         return $this->getRoundsOfGolfPlayed() * 12 / Consumption::$avg_club_rounds_of_golf_played * Consumption::$avg_club_co2_footprint;
     }
