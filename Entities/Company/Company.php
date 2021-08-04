@@ -305,7 +305,7 @@ class Company extends Model
             ->where('question_type_id', $question_type->id)
             ->where('updated_at', '<=', $date)
             ->orderBy('updated_at', 'DESC')
-            ->first()->value;
+            ->firstOrFail()->value;
     }
 
 
