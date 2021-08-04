@@ -156,7 +156,6 @@ class Company extends Model
 
         $co2Footprint = $this->calculateCO2Footprint($start_date, $end_date);
         $total_year_club_footprint = $co2Footprint['co2_footprint_minus_co2_sequestration'];
-
         $score = Consumption::interpolateCertification($total_year_club_footprint, $this->getClubAverageFootprintMinusSequestrationValue() * (($start_date->diffInDays($end_date) + 1) / 365));
 
         return round($score * 100, 2);
@@ -183,8 +182,10 @@ class Company extends Model
             11 => [],
             12 => [],
         ];
-
         $date_range = [];
+        $total_year_club_footprint = 0;
+        $total_year_co2_footprint = 0;
+        $total_year_co2_sequestration = 0;
 
         foreach ($months as $key => &$month) {
             $period = CarbonPeriod::create($start_date->toDateString(), $end_date->toDateString());
@@ -203,35 +204,37 @@ class Company extends Model
         }
 
         $company_consumptions = Consumption::where('company_id',$this->id)->whereDate('end_date', '>=', $start_date)->whereDate('end_date' , '<=' , $end_date)->get();
-
-//        dd($start_date->toDateString(), $end_date->toDateString(), $company_consumptions->count());
-
         $grouped_consumptions_by_months = $company_consumptions->groupBy(function ($consumption) {
             return $consumption->end_date->month;
         });
 
-        foreach ($grouped_consumptions_by_months as $key => $month_consumptions) {
-            $months[$key]['co2_footprint'] = $month_consumptions->sum('co2_footprint');
+        if ($grouped_consumptions_by_months->count() <= 0) {
+            $total_year_club_footprint = $this->getClubAverageFootprintMinusSequestrationValue() * 1.3;
+            $total_year_co2_sequestration = Consumption::getMonthCO2Sequestration($this->id) * 12;
+            $total_year_co2_footprint = $total_year_club_footprint + $total_year_co2_sequestration;
+        } else {
+            foreach ($grouped_consumptions_by_months as $key => $month_consumptions) {
+                $months[$key]['co2_footprint'] = $month_consumptions->sum('co2_footprint');
 
-            if (is_null($months[$key]['co2_footprint'])) {
-                $months[$key]['co2_footprint_minus_co2_sequestration'] = $this->getClubAverageFootprintMinusSequestrationValue() / 12 * 1.3;
-            } else {
-                $month_co2_sequestration = Consumption::getMonthCO2Sequestration($this->id);
-                $months[$key]['co2_sequestration'] = $month_co2_sequestration;
-                $club_co2_footprint = $months[$key]['co2_footprint'] - $month_co2_sequestration;
-                $months[$key]['co2_footprint_minus_co2_sequestration'] = $club_co2_footprint;
+                if (is_null($months[$key]['co2_footprint'])) {
+                    $months[$key]['co2_footprint_minus_co2_sequestration'] = $this->getClubAverageFootprintMinusSequestrationValue() / 12 * 1.3;
+                    $months[$key]['co2_sequestration'] = Consumption::getMonthCO2Sequestration($this->id);
+                    $months[$key]['co2_footprint'] = $months[$key]['co2_footprint_minus_co2_sequestration'] + $months[$key]['co2_sequestration'];
+                } else {
+                    $month_co2_sequestration = Consumption::getMonthCO2Sequestration($this->id);
+                    $months[$key]['co2_sequestration'] = $month_co2_sequestration;
+                    $club_co2_footprint = $months[$key]['co2_footprint'] - $month_co2_sequestration;
+                    $months[$key]['co2_footprint_minus_co2_sequestration'] = $club_co2_footprint;
+                }
+            }
+
+            foreach ($months as $month) {
+                $total_year_club_footprint += $month['co2_footprint_minus_co2_sequestration'];
+                $total_year_co2_footprint += $month['co2_footprint'];
+                $total_year_co2_sequestration += $month['co2_sequestration'];
             }
         }
 
-        $total_year_club_footprint = 0;
-        $total_year_co2_footprint = 0;
-        $total_year_co2_sequestration = 0;
-
-        foreach ($months as $month) {
-            $total_year_club_footprint += $month['co2_footprint_minus_co2_sequestration'];
-            $total_year_co2_footprint += $month['co2_footprint'];
-            $total_year_co2_sequestration += $month['co2_sequestration'];
-        }
 
         return [
             'total_co2_footprint' => $total_year_co2_footprint,
