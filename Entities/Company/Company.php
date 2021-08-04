@@ -301,11 +301,15 @@ class Company extends Model
      */
     public function getQuestionnaireTotalScore(QuestionType $question_type, Carbon $date): float
     {
-        return TotalProgress::where('company_id', $this->id)
+        $total_progress = TotalProgress::where('company_id', $this->id)
             ->where('question_type_id', $question_type->id)
             ->where('updated_at', '<=', $date)
             ->orderBy('updated_at', 'DESC')
-            ->firstOrFail()->value;
+            ->first();
+
+        if (is_null($total_progress)) $value = 0;
+        else $value = $total_progress->value;
+        return $value;
     }
 
 
