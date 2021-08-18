@@ -5,6 +5,8 @@ namespace Modules\Accounts\Entities\Company;
 use Carbon\CarbonPeriod;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
@@ -17,7 +19,9 @@ use Modules\Category\Entities\Category;
 use Modules\Certification\Entities\CompanyCertificationVariables;
 use Modules\Certification\Entities\InternalCertification;
 use Modules\Certification\Entities\TotalScoreProgress;
+use Modules\Consumption\Entities\CompanyEnergySupplier;
 use Modules\Consumption\Entities\Consumption;
+use Modules\Consumption\Entities\EnergySupplier;
 use Modules\Consumption\Entities\TotalProgressConsumption;
 use Modules\Dashboard\Entities\DashboardElement;
 use Modules\Dashboard\Entities\TotalProgress;
@@ -129,6 +133,11 @@ class Company extends Model
         });
         $credentials = $credentials->unique();
         return $credentials;
+    }
+
+    public function energy_suppliers(): BelongsToMany
+    {
+        return $this->belongsToMany (EnergySupplier::class, 'company_energy_suppliers','company_id','energy_supplier_id');
     }
 
 

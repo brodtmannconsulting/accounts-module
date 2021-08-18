@@ -5,6 +5,7 @@ namespace Modules\Accounts\Transformers\Company;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Storage;
 use Modules\Accounts\Transformers\Role\RoleResource;
+use Modules\Consumption\Transformers\EnergySupplierResource;
 
 class CompanyResource extends JsonResource
 {
@@ -32,6 +33,7 @@ class CompanyResource extends JsonResource
                 'avatar' => $avatar,
                 'city' => $this->city,
                 'country_code' => $this->country_code,
+                'energy_suppliers' => EnergySupplierResource::collection($this->whenLoaded('energy_suppliers')),
             ],
             'links' => [
                 'self' => $this->path()
