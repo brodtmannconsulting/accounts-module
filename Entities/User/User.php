@@ -13,6 +13,7 @@ use Modules\Accounts\Entities\Credential\Credential;
 use Modules\Accounts\Entities\Role\Role;
 use Modules\Accounts\Entities\Role\UserRole;
 use Modules\Accounts\Entities\Scope\Scope;
+use Modules\Notification\Entities\NotificationSetting;
 
 class User extends Model
 {
@@ -94,7 +95,7 @@ class User extends Model
     }
 
     public function setNotificationChannels () {
-        $this->attributes['notification_channels'] = json_encode(array('mail' => true, 'database' => true));
+        $this->attributes['notification_channels'] = json_encode(array('mail' => false, 'database' => true));
     }
 
     public function deleteUsersRoles() {
@@ -236,11 +237,21 @@ class User extends Model
         return array_unique ($scopes_ids);
     }
 
-    public function getNotificationChannels() {
-//        $result = array_search(true, $this->notification_channels);
-//        if ($result != false) $result = array_keys($this->notification_channels, true);
-//        else $result = [];
-//        return $result;
-        return ['database'];
+    public function getNotificationSettings(): array
+    {
+        $notificationSettings = NotificationSetting::where('user_id', $this->id)->first();
+        $notificationTypes = $notificationSettings->notification_types;
+        $regularityOfReceipt = $notificationSettings->regularity_of_receipt;
+        $result['notificationTypes'] = $this->getArrayKeys($notificationTypes);
+        $result['regularityOfReceipt'] = $this->getArrayKeys($regularityOfReceipt);
+        return $result;
+    }
+
+    private function getArrayKeys(array $array): array
+    {
+        $result = array_search(true, $array);
+        if ($result != false) $result = array_keys($array, true);
+        else $result = [];
+        return $result;
     }
 }
