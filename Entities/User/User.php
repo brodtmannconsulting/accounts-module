@@ -237,13 +237,23 @@ class User extends Model
         return array_unique ($scopes_ids);
     }
 
+    public function getNotificationChannels(): array
+    {
+        return $this->getArrayKeys($this->notification_channels);
+    }
+
     public function getNotificationSettings(): array
     {
         $notificationSettings = NotificationSetting::where('user_id', $this->id)->first();
-        $notificationTypes = $notificationSettings->notification_types;
-        $regularityOfReceipt = $notificationSettings->regularity_of_receipt;
-        $result['notificationTypes'] = $this->getArrayKeys($notificationTypes);
-        $result['regularityOfReceipt'] = $this->getArrayKeys($regularityOfReceipt);
+        if ($notificationSettings) {
+            $notificationTypes = $notificationSettings->notification_types;
+            $regularityOfReceipt = $notificationSettings->regularity_of_receipt;
+            $result['notificationTypes'] = $this->getArrayKeys($notificationTypes);
+            $result['regularityOfReceipt'] = $this->getArrayKeys($regularityOfReceipt);
+        } else {
+            $result['notificationTypes'] = [];
+            $result['regularityOfReceipt'] = [];
+        }
         return $result;
     }
 
