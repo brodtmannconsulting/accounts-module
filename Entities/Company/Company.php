@@ -268,8 +268,7 @@ class Company extends Model
         $consumption_score = $total_score_for_each_block['consumption_score'];
         $initiatives_and_engagement_score = $total_score_for_each_block['initiatives_and_engagement_score'];
 
-
-        $achieved_score_for_each_block = $this->getAchievedScoreForEachBlock($sustainability_score, $resiliency_score, $consumption_score, $initiatives_and_engagement_score);
+        $achieved_score_for_each_block = $this->getAchievedScoreForEachBlock($sustainability_score, $resiliency_score, $initiatives_and_engagement_score, $consumption_score);
         $achieved_sustainability_score = $achieved_score_for_each_block ['achieved_sustainability_score'];
         $achieved_resiliency_score = $achieved_score_for_each_block ['achieved_resiliency_score'];
         $achieved_initiatives_and_engagement_score = $achieved_score_for_each_block ['achieved_initiatives_and_engagement_score'];
@@ -341,7 +340,7 @@ class Company extends Model
     public function getNextCertificate () : ?InternalCertification
     {
         $total_score = $this->calculateTotalCertificationScore(now()->subYear(), now());
-        $internal_certificates = InternalCertification::where('certification_weight', '>=', $total_score)->with('certification')->get();
+        $internal_certificates = InternalCertification::where('certification_weight', '>', $total_score)->with('certification')->get();
         return $internal_certificates->where('certification_weight', $internal_certificates->min('certification_weight'))->first();
     }
 
@@ -380,11 +379,12 @@ class Company extends Model
     public function getAchievedScoreForEachBlock(float $sustainability_score, float $resiliency_score, float $initiatives_and_engagement_score, float $consumption_score): array
     {
         $certification_variables = $this->certificationVariables;
+
         return [
-            'achieved_sustainability_score' => $certification_variables->sustainability_certification_volume * ($sustainability_score / 100),
-            'achieved_resiliency_score' => $certification_variables->resiliency_certification_volume * ($resiliency_score / 100),
-            'achieved_initiatives_and_engagement_score' => $certification_variables->initiatives_and_engagement_volume * ($initiatives_and_engagement_score / 100),
-            'achieved_consumption_score' => $certification_variables->consumption_certification_volume * ($consumption_score / 100),
+            'achieved_sustainability_score' => $certification_variables->sustainability_certification_volume / 100 * $sustainability_score,
+            'achieved_resiliency_score' => $certification_variables->resiliency_certification_volume / 100 * $resiliency_score,
+            'achieved_initiatives_and_engagement_score' => $certification_variables->initiatives_and_engagement_volume / 100 * $initiatives_and_engagement_score,
+            'achieved_consumption_score' => $certification_variables->consumption_certification_volume / 100 * $consumption_score,
         ];
     }
 
