@@ -269,13 +269,10 @@ class Company extends Model
         $initiatives_and_engagement_score = $total_score_for_each_block['initiatives_and_engagement_score'];
 
         $achieved_score_for_each_block = $this->getAchievedScoreForEachBlock($sustainability_score, $resiliency_score, $initiatives_and_engagement_score, $consumption_score);
-        $achieved_sustainability_score = $achieved_score_for_each_block ['achieved_sustainability_score'];
-        $achieved_resiliency_score = $achieved_score_for_each_block ['achieved_resiliency_score'];
-        $achieved_initiatives_and_engagement_score = $achieved_score_for_each_block ['achieved_initiatives_and_engagement_score'];
-        $achieved_consumption_score = $achieved_score_for_each_block ['achieved_consumption_score'];
-
-        $total_score = $achieved_sustainability_score + $achieved_resiliency_score + $achieved_initiatives_and_engagement_score + $achieved_consumption_score;
-
+        $total_score = array_sum($achieved_score_for_each_block);
+        foreach ($achieved_score_for_each_block as $key => $value){
+            echo ($key .' => '. $value);
+        }
         TotalScoreProgress::firstOrCreate([
             'value' => $total_score,
             'company_id' => $this->id,
