@@ -267,8 +267,7 @@ class Company extends Model
         $resiliency_score = $total_score_for_each_block['resiliency_score'];
         $consumption_score = $total_score_for_each_block['consumption_score'];
         $initiatives_and_engagement_score = $total_score_for_each_block['initiatives_and_engagement_score'];
-
-        echo ("consumption_score" .' => '. $consumption_score);
+        
         $achieved_score_for_each_block = $this->getAchievedScoreForEachBlock($sustainability_score, $resiliency_score, $initiatives_and_engagement_score, $consumption_score);
         $total_score = array_sum($achieved_score_for_each_block);
 
@@ -375,8 +374,6 @@ class Company extends Model
     public function getAchievedScoreForEachBlock(float $sustainability_score, float $resiliency_score, float $initiatives_and_engagement_score, float $consumption_score): array
     {
         $certification_variables = $this->certificationVariables;
-        echo ("certification_variables->consumption_certification_volume" .' => '. $certification_variables->consumption_certification_volume);
-        echo ("achieved_consumption_score" .' => '. $certification_variables->consumption_certification_volume / 100 * $consumption_score);
         return [
             'achieved_sustainability_score' => $certification_variables->sustainability_certification_volume / 100 * $sustainability_score,
             'achieved_resiliency_score' => $certification_variables->resiliency_certification_volume / 100 * $resiliency_score,
