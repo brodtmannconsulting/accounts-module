@@ -267,7 +267,7 @@ class Company extends Model
         $resiliency_score = $total_score_for_each_block['resiliency_score'];
         $consumption_score = $total_score_for_each_block['consumption_score'];
         $initiatives_and_engagement_score = $total_score_for_each_block['initiatives_and_engagement_score'];
-        
+
         $achieved_score_for_each_block = $this->getAchievedScoreForEachBlock($sustainability_score, $resiliency_score, $initiatives_and_engagement_score, $consumption_score);
         $total_score = array_sum($achieved_score_for_each_block);
 
@@ -418,6 +418,9 @@ class Company extends Model
 
     public function getClubAverageFootprintMinusSequestrationValue()
     {
+        echo (" ". $this->getRoundsOfGolfPlayed(). " ");
+        echo (" ". Consumption::$avg_club_rounds_of_golf_played. " ");
+        echo (" ". Consumption::$avg_club_co2_footprint. " ");
         return $this->getRoundsOfGolfPlayed() * 12 / Consumption::$avg_club_rounds_of_golf_played * Consumption::$avg_club_co2_footprint;
     }
 
