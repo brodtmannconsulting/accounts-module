@@ -418,6 +418,10 @@ class Company extends Model
 
     public function getClubAverageFootprintMinusSequestrationValue()
     {
+        $rounds_of_golf_played = $this->getRoundsOfGolfPlayed();
+        if (!is_numeric($rounds_of_golf_played)){
+            $rounds_of_golf_played = 0;
+        }
         return $this->getRoundsOfGolfPlayed() * 12 / Consumption::$avg_club_rounds_of_golf_played * Consumption::$avg_club_co2_footprint;
     }
 
