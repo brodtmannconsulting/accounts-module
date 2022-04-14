@@ -418,9 +418,6 @@ class Company extends Model
 
     public function getClubAverageFootprintMinusSequestrationValue()
     {
-        echo (" ". $this->getRoundsOfGolfPlayed(). " ");
-        echo (" ". Consumption::$avg_club_rounds_of_golf_played. " ");
-        echo (" ". Consumption::$avg_club_co2_footprint. " ");
         return $this->getRoundsOfGolfPlayed() * 12 / Consumption::$avg_club_rounds_of_golf_played * Consumption::$avg_club_co2_footprint;
     }
 
