@@ -143,8 +143,7 @@ class RolesController extends Controller
         $scopesData = request()->validate ([
             "scopes" => "required|array|min:1",
             'scopes.*.scope_id' => 'required|exists:scopes,id',
-            'scopes.*.companies_ids' => "required|array|min:1",
-            'scopes.*.companies_ids.' => 'exists:companies,id'
+            'scopes.*.companies_ids' => "required|array|min:1,exists:companies,id",
         ]);
         //remove duplicate values from array
         $scopesData = array_map("unserialize", array_unique(array_map("serialize", $scopesData['scopes'])));
