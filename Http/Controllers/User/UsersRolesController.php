@@ -142,6 +142,7 @@ class UsersRolesController extends Controller
     {
         $scopesData = $request->validate ([
             "roles" => "required|array|min:1",
+            'roles.*.role_id' => 'required|exists:roles,id',
             "roles.*.scopes" => "array",
             'roles.*.scopes.*.scope_id' => 'required|exists:scopes,id',
         ]);
