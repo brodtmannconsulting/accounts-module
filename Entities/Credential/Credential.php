@@ -55,7 +55,15 @@ class Credential extends Authenticatable
      */
     protected $keyType = 'string';
 
-    protected $dates = ['valid_from','valid_until'];
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'valid_from' => 'datetime',
+        'valid_until' => 'datetime',
+    ];
 
     /**
      * Boot function for using with Credential Events
