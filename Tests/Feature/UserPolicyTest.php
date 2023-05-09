@@ -33,7 +33,7 @@ class UserPolicyTest extends PassportTestCase
     {
         $user = self::createUserWithRole('maximuss','123456789',$this->company->id,'user');
 
-        Passport::actingAs($user->credentials()->first(),[$this->user->getScopes()]);
+        Passport::actingAs($user->credentials()->first(), $user->getScopes());
         $response = $this->get ('api/users');
         $response->assertStatus (Response::HTTP_FORBIDDEN);
     }
